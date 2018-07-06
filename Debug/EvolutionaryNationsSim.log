@@ -1,0 +1,17 @@
+﻿  stdafx.cpp
+  State.cpp
+  Nation.cpp
+  MapHandler.cpp
+c:\users\witzk\desktop\evolutionarynationssim\maphandler.cpp(52): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\desktop\evolutionarynationssim\maphandler.cpp(54): warning C4018: '<': signed/unsigned mismatch
+  Main.cpp
+c:\users\witzk\desktop\evolutionarynationssim\main.cpp(51): warning C4305: 'argument': truncation from 'double' to 'float'
+  InputHandler.cpp
+c:\users\witzk\desktop\evolutionarynationssim\inputhandler.cpp(23): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\witzk\desktop\evolutionarynationssim\inputhandler.cpp(69): warning C4018: '<': signed/unsigned mismatch
+  ButtonTemplate.cpp
+  Generating Code...
+c:\users\witzk\desktop\evolutionarynationssim\buttontemplate.cpp(21): warning C4715: 'ButtonTemplate::readBMP': not all control paths return a value
+c:\users\witzk\desktop\evolutionarynationssim\maphandler.cpp(77): warning C4715: 'MapHandler::readBMP': not all control paths return a value
+  EvolutionaryNationsSim.vcxproj -> C:\Users\witzk\Desktop\EvolutionaryNationsSim\Debug\EvolutionaryNationsSim.exe
+  EvolutionaryNationsSim.vcxproj -> C:\Users\witzk\Desktop\EvolutionaryNationsSim\Debug\EvolutionaryNationsSim.pdb (Partial PDB)

@@ -24,10 +24,10 @@ public:
 	~ButtonTemplate();
 
 	//draws button
-	void update(RenderWindow * window);
+	void update();
 
 	//returns true if the inputed vector2 is inside of the button
-	bool isWithin(Vector2f possiblePoint);
+	bool isWithinHitBox(Vector2f mousePos);
 
 	//the function we want the button to do when pressed:
 	void(*callBackFunction)();

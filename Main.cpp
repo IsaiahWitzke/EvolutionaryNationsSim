@@ -15,6 +15,13 @@ using namespace sf;
 float GLOBALSCALE = 5;
 Vector2f GLOBALOFFSET = Vector2f(0, 0);
 
+RenderWindow g_window(VideoMode(512, 512), "Evolutionary Nations");
+
+//the entire collection of states the entire simulation is based off of
+MapHandler g_map;
+
+//all input is handled here
+InputHandler g_inputHandler;
 
 void testFunc()
 {
@@ -23,28 +30,21 @@ void testFunc()
 
 int main()
 {
-
-
-	RenderWindow window(VideoMode(512, 512), "Evolutionary Nations");
-
-	MapHandler map;
-	InputHandler inputHandler(&window);
-
 	void(*callBackFunc)() = &testFunc;
 
 	ButtonTemplate testButton("Assets/TestButton.bmp", Vector2f(10, 10), callBackFunc, 5);
 
 	//need to link buttons to the input handler
-	inputHandler.buttons.push_back(testButton);
+	g_inputHandler.buttons.push_back(&testButton);
 
 	Nation testNation(Color(255, 0, 0, 255));
-	testNation.addContolledState(&map.states[0][0]);
-	testNation.addContolledState(&map.states[1][0]);
+	testNation.addContolledState(&g_map.states[0][0]);
+	testNation.addContolledState(&g_map.states[1][0]);
 
 	//initially draw stuff to screen.
-	testButton.update(&window);
-	map.updateStates(&window);
-	window.display();
+	testButton.update();
+	g_map.updateStates();
+	g_window.display();
 
 	//For refreshing the screen periodically (currently 30fps)
 	Clock screenRefreshClock;
@@ -55,27 +55,27 @@ int main()
 	Time nationUpdateTime = seconds(1.5);
 
 	//main loop
-	while (window.isOpen())
+	while (g_window.isOpen())
 	{
 		//event handling
 		Event evnt;
-		while (window.pollEvent(evnt))
+		while (g_window.pollEvent(evnt))
 		{
 			if (evnt.type == Event::Closed)
 			{
-				window.close();
+				g_window.close();
 				break;
 			}
 
 			//keyboard input
-			if (inputHandler.getInput(&evnt))
+			if (g_inputHandler.getInput(&evnt))
 			{
 				//may need to fix this issue later on...
 				//every time there is a new event, we want to redraw stuff to screen (makes screen it seem smoother)
-				window.clear();
-				map.updateStates(&window);
-				testButton.update(&window);
-				window.display();
+				g_window.clear();
+				g_map.updateStates();
+				testButton.update();
+				g_window.display();
 			}
 		}
 		
@@ -83,17 +83,17 @@ int main()
 		if (screenRefreshClock.getElapsedTime() >= screenRefreshTime)
 		{
 			screenRefreshClock.restart();
-			window.clear();
-			map.updateStates(&window);
-			testButton.update(&window);
-			window.display();
+			g_window.clear();
+			g_map.updateStates();
+			testButton.update();
+			g_window.display();
 		}
 
 		//updating nations periodically
 		if (nationUpdateClock.getElapsedTime() >= nationUpdateTime)
 		{
 			nationUpdateClock.restart();
-			testNation.update(&map);
+			testNation.update();
 		}
 	}
 

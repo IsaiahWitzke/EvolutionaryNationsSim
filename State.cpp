@@ -4,6 +4,7 @@
 
 extern float GLOBALSCALE;
 extern Vector2f GLOBALOFFSET;
+extern RenderWindow g_window;
 using namespace std;
 
 Texture State::makeDefaultTexture()
@@ -16,9 +17,22 @@ Texture State::makeDefaultTexture()
 		system("PAUSE");
 	}
 
+	this->size = texture.getSize();
 	return texture;
 }
 
+
+bool State::isWithinHitBox(Vector2f possiblePoint)
+{
+	if (possiblePoint.x > position.x && possiblePoint.x < position.x + (size.x * sprite.getScale().x))
+	{
+		if (possiblePoint.y > position.y && possiblePoint.y < position.y + size.y * sprite.getScale().x)
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 State::State(bool isWater, Vector2f position, Vector2i positionInMap)
 {
@@ -40,7 +54,7 @@ State::State(bool isWater, Vector2f position, Vector2i positionInMap)
 	this->position = position;
 }
 
-void State::update(RenderWindow * window)
+void State::update()
 {
 	//every nation has a different color, if there is no controlling nation, then make it a green default color
 	if (controller != NULL)
@@ -58,12 +72,12 @@ void State::update(RenderWindow * window)
 	this->sprite.setColor(color);
 	
 	//updating position on screen stuff
-	float newX = GLOBALSCALE*(position.x + GLOBALOFFSET.x) + window->getSize().x / 2;
-	float newY = GLOBALSCALE*(position.y + GLOBALOFFSET.y) + window->getSize().y / 2;
+	float newX = GLOBALSCALE*(position.x + GLOBALOFFSET.x) + g_window.getSize().x / 2;
+	float newY = GLOBALSCALE*(position.y + GLOBALOFFSET.y) + g_window.getSize().y / 2;
 
 	this->sprite.setPosition(Vector2f(newX, newY));
 	sprite.setScale(Vector2f(GLOBALSCALE * 15, GLOBALSCALE * 15));
-	window->draw(sprite);
+	g_window.draw(sprite);
 }
 
 

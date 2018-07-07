@@ -1,7 +1,10 @@
 #include "stdafx.h"
 #include "MapHandler.h"
+#include "inputHandler.h"
 
 extern float GLOBALSCALE;
+extern RenderWindow g_window;
+extern InputHandler g_inputHandler;
 
 using namespace std;
 
@@ -40,20 +43,30 @@ MapHandler::MapHandler()
 		}
 		this->states.push_back(column);
 	}
+
+
+	////after all states are done initializing, we want to add them to the array of buttons in the input handler
+	//for (int x = 0; x < width; x++)
+	//{
+	//	for (int y = 0; y < height; y++)
+	//	{
+	//		g_inputHandler.buttons.push_back(&states[x][y]);
+	//	}
+	//}
 }
 
 MapHandler::~MapHandler()
 {
 }
 
-void MapHandler::updateStates(RenderWindow * window)
+void MapHandler::updateStates()
 {
 	//goes through all the different states
 	for (int x = 0; x < states.size(); x++)
 	{
 		for (int y = 0; y < states[0].size(); y++)
 		{
-			states[x][y].update(window);
+			states[x][y].update();
 		}
 	}
 }

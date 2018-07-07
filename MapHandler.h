@@ -29,6 +29,6 @@ public:
 	MapHandler();
 	~MapHandler();
 
-	void updateStates(RenderWindow * window);
+	void updateStates();
 };
 

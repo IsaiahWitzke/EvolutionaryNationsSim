@@ -6,10 +6,10 @@ using namespace std;
 
 extern float GLOBALSCALE;
 extern Vector2f GLOBALOFFSET;
+extern RenderWindow g_window;
 
-InputHandler::InputHandler(Window *window)
+InputHandler::InputHandler()
 {
-	this->window = window;
 }
 
 
@@ -68,9 +68,9 @@ bool InputHandler::getInput(Event * event)
 		//go through all buttons, if the mouse location is within the button, do the button's callback function then leave
 		for (int i = 0; i < buttons.size(); i++)
 		{
-			if (buttons[i].isWithin(Vector2f(Mouse::getPosition(*window))))
+			if (buttons[i]->isWithinHitBox(Vector2f(Mouse::getPosition(g_window))))
 			{
-				buttons[i].callBackFunction();
+				buttons[i]->callBackFunction();
 			}
 		}
 	}

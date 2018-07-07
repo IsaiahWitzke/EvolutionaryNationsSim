@@ -12,14 +12,12 @@ class InputHandler
 {
 private:
 
-	Window *window;
-
 public:
-	InputHandler(Window *window);
+	InputHandler();
 	~InputHandler();
 
-	//array of buttons
-	vector<ButtonTemplate> buttons;
+	//array of buttons' hit box functions
+	vector<ButtonTemplate*> buttons;
 
 	bool getInput(Event * event);
 };

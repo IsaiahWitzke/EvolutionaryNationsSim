@@ -2,7 +2,7 @@
 #include "ButtonTemplate.h"
 
 extern float GLOBALSCALE;
-
+extern RenderWindow g_window;
 
 Texture ButtonTemplate::readBMP(string file)
 {
@@ -37,16 +37,16 @@ ButtonTemplate::~ButtonTemplate()
 {
 }
 
-void ButtonTemplate::update(RenderWindow * window)
+void ButtonTemplate::update()
 {
-	window->draw(this->sprite);
+	g_window.draw(this->sprite);
 }
 
-bool ButtonTemplate::isWithin(Vector2f possiblePoint)
+bool ButtonTemplate::isWithinHitBox(Vector2f mousePos)
 {
-	if (possiblePoint.x > position.x && possiblePoint.x < position.x + (size.x * sprite.getScale().x))
+	if (mousePos.x > position.x && mousePos.x < position.x + (size.x * sprite.getScale().x))
 	{
-		if (possiblePoint.y > position.y && possiblePoint.y < position.y + size.y * sprite.getScale().x)
+		if (mousePos.y > position.y && mousePos.y < position.y + size.y * sprite.getScale().x)
 		{
 			return true;
 		}

@@ -31,9 +31,9 @@ public:
 	void addContolledState(State* state);
 
 	//this is where all the nation's thinking/behavior will go
-	void update(MapHandler *map);
+	void update();
 
 	//to spread around in every possible direction
-	void spread(MapHandler *map);
+	void spread();
 };
 

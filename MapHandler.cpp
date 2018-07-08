@@ -45,14 +45,14 @@ MapHandler::MapHandler()
 	}
 
 
-	////after all states are done initializing, we want to add them to the array of buttons in the input handler
-	//for (int x = 0; x < width; x++)
-	//{
-	//	for (int y = 0; y < height; y++)
-	//	{
-	//		g_inputHandler.buttons.push_back(&states[x][y]);
-	//	}
-	//}
+	//after all states are done initializing, we want to add them to the array of buttons in the input handler
+	for (int x = 0; x < width; x++)
+	{
+		for (int y = 0; y < height; y++)
+		{
+			g_inputHandler.buttonHitBoxes.push_back(states[x][y].hitBox);
+		}
+	}
 }
 
 MapHandler::~MapHandler()
@@ -61,12 +61,21 @@ MapHandler::~MapHandler()
 
 void MapHandler::updateStates()
 {
-	//goes through all the different states
+	//goes through all the different states and call's their update functions
 	for (int x = 0; x < states.size(); x++)
 	{
 		for (int y = 0; y < states[0].size(); y++)
 		{
 			states[x][y].update();
+		}
+	}
+
+	//after all states are done updating, we want to add them to the array of buttons in the input handler
+	for (int x = 0; x < width; x++)
+	{
+		for (int y = 0; y < height; y++)
+		{
+			g_inputHandler.buttonHitBoxes.push_back(states[x][y].hitBox);
 		}
 	}
 }

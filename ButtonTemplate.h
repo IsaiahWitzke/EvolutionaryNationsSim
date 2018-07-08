@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <iostream>
+#include "HitBox.h"
 #include "sfml/Graphics.hpp"
 
 
@@ -17,7 +18,6 @@ private:
 	Sprite sprite;
 	Vector2f position;
 	Vector2u size;
-	
 
 public:
 	ButtonTemplate(string picturePath, Vector2f position, void(*callBackFunction)(), float scale);
@@ -26,11 +26,8 @@ public:
 	//draws button
 	void update();
 
-	//returns true if the inputed vector2 is inside of the button
-	bool isWithinHitBox(Vector2f mousePos);
-
 	//the function we want the button to do when pressed:
 	void(*callBackFunction)();
 
+	HitBox hitBox;
 };
-

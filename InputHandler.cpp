@@ -8,6 +8,18 @@ extern float GLOBALSCALE;
 extern Vector2f GLOBALOFFSET;
 extern RenderWindow g_window;
 
+bool InputHandler::isWithinHitbox(Vector2f possiblePoint, HitBox hitBox)
+{
+	if (possiblePoint.x > hitBox.topLeft.x && possiblePoint.x < hitBox.bottomRight.x)
+	{
+		if (possiblePoint.y > hitBox.topLeft.y && possiblePoint.y < hitBox.bottomRight.y)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 InputHandler::InputHandler()
 {
 }
@@ -65,12 +77,12 @@ bool InputHandler::getInput(Event * event)
 	//buttons
 	if (Mouse::isButtonPressed(Mouse::Left))
 	{
-		//go through all buttons, if the mouse location is within the button, do the button's callback function then leave
-		for (int i = 0; i < buttons.size(); i++)
+		//go through all buttons' hit boxes, if the mouse location is within the button, do the button's callback function then leave
+		for (int i = 0; i < buttonHitBoxes.size(); i++)
 		{
-			if (buttons[i]->isWithinHitBox(Vector2f(Mouse::getPosition(g_window))))
+			if (isWithinHitbox(Vector2f(Mouse::getPosition(g_window)), buttonHitBoxes[i]))
 			{
-				buttons[i]->callBackFunction();
+				buttonHitBoxes[i].callBackFunction();
 			}
 		}
 	}

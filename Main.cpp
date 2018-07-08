@@ -35,7 +35,7 @@ int main()
 	ButtonTemplate testButton("Assets/TestButton.bmp", Vector2f(10, 10), callBackFunc, 5);
 
 	//need to link buttons to the input handler
-	g_inputHandler.buttons.push_back(&testButton);
+	g_inputHandler.buttonHitBoxes.push_back(testButton.hitBox);
 
 	Nation testNation(Color(255, 0, 0, 255));
 	testNation.addContolledState(&g_map.states[0][0]);
@@ -73,6 +73,7 @@ int main()
 				//may need to fix this issue later on...
 				//every time there is a new event, we want to redraw stuff to screen (makes screen it seem smoother)
 				g_window.clear();
+				g_inputHandler.buttonHitBoxes.empty();	//want to get rid of all buttons because the update functions add them back in
 				g_map.updateStates();
 				testButton.update();
 				g_window.display();
@@ -84,6 +85,7 @@ int main()
 		{
 			screenRefreshClock.restart();
 			g_window.clear();
+			g_inputHandler.buttonHitBoxes.clear();	//want to get rid of all buttons because the update functions add them back in
 			g_map.updateStates();
 			testButton.update();
 			g_window.display();

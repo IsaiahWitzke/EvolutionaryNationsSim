@@ -2,7 +2,7 @@
 
 #include <sfml/Graphics.hpp>
 #include "Nation.h"
-
+#include "HitBox.h"
 
 using namespace sf;
 
@@ -31,9 +31,10 @@ public:
 	bool isWater;
 	Vector2i positionInMap;	//the position in the maps. ie: (2, 4) would be 2 states to the right and 4 states down.
 
-	//this exact function can be found in the "ButtonTemplate" class as well. It will basically turn the state into a button
-	//when the state is pressed, the state's info is outputted to the console
-	bool isWithinHitBox(Vector2f possiblePoint);
+	//a hit box for our state so we can click on it and it will output information to the console
+	HitBox hitBox;
+	void(*callBackFunction)();	//when the hit box is hit it will call this function
+	//void printInfo();			//this is the function that the callback function will become the callback
 
 	State(bool isWater, Vector2f position, Vector2i positionInMap);
 	~State();

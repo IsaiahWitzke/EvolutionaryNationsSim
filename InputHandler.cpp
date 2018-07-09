@@ -78,11 +78,15 @@ bool InputHandler::getInput(Event * event)
 	if (Mouse::isButtonPressed(Mouse::Left))
 	{
 		//go through all buttons' hit boxes, if the mouse location is within the button, do the button's callback function then leave
-		for (int i = 0; i < buttonHitBoxes.size(); i++)
+		for (int i = buttonHitBoxes.size()-1; i > -1; i--)
 		{
 			if (isWithinHitbox(Vector2f(Mouse::getPosition(g_window)), buttonHitBoxes[i]))
 			{
 				buttonHitBoxes[i].callBackFunction();
+				//we also don't want to be pressing on states through a button, so break here 
+				//(the items lower down in the "buttonHitBoxes" list get a higher priority because their update functions would have been called last
+				//and therefore would have been drawn on top of everything else on the screen)
+				break;
 			}
 		}
 	}

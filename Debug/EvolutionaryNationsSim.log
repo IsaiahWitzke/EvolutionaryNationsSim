@@ -1,5 +1,12 @@
-﻿  InputHandler.cpp
+﻿  State.cpp
+c:\users\witzk\desktop\evolutionarynationssim\state.cpp(55): error C2276: '&': illegal operation on bound member function expression
+  InputHandler.cpp
 c:\users\witzk\desktop\evolutionarynationssim\inputhandler.cpp(35): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\witzk\desktop\evolutionarynationssim\inputhandler.cpp(81): warning C4018: '<': signed/unsigned mismatch
-  EvolutionaryNationsSim.vcxproj -> C:\Users\witzk\Desktop\EvolutionaryNationsSim\Debug\EvolutionaryNationsSim.exe
-  EvolutionaryNationsSim.vcxproj -> C:\Users\witzk\Desktop\EvolutionaryNationsSim\Debug\EvolutionaryNationsSim.pdb (Partial PDB)
+  Generating Code...
+  Compiling...
+  Main.cpp
+c:\users\witzk\desktop\evolutionarynationssim\main.cpp(51): warning C4305: 'argument': truncation from 'double' to 'float'
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  Nation.cpp
+  MapHandler.cpp

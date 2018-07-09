@@ -24,9 +24,11 @@ Texture State::makeDefaultTexture()
 }
 
 //will become the callback function
-void printInfo()
+//NOTE: this is a global function at the moment, I didn't know how to make a pointer to a function in a scope without the scope messing with it
+void State::printInfo()
 {
-	printf("State info:\n");
+	cout << "State info: " << endl;
+	cout << "Is it water? " << this->isWater << endl;
 }
 
 State::State(bool isWater, Vector2f position, Vector2i positionInMap)

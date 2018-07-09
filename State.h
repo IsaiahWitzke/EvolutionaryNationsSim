@@ -34,7 +34,7 @@ public:
 	//a hit box for our state so we can click on it and it will output information to the console
 	HitBox hitBox;
 	void(*callBackFunction)();	//when the hit box is hit it will call this function
-	//void printInfo();			//this is the function that the callback function will become the callback
+	void printInfo();			//this is the function that the callback function will become the callback
 
 	State(bool isWater, Vector2f position, Vector2i positionInMap);
 	~State();

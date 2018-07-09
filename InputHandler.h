@@ -5,6 +5,7 @@
 #include <vector>
 #include "ButtonTemplate.h"
 #include "HitBox.h"
+#include "State.h"
 
 using namespace sf;
 
@@ -16,8 +17,9 @@ public:
 	InputHandler();
 	~InputHandler();
 
-	//array of all buttons' hit boxes
-	vector<HitBox> buttonHitBoxes;
+	//array of all buttons' and the states so we can "hit" them later on
+	vector<ButtonTemplate> buttons;
+	vector<State> states;
 
 	bool getInput(Event * event);
 };

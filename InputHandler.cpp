@@ -77,16 +77,31 @@ bool InputHandler::getInput(Event * event)
 	//buttons
 	if (Mouse::isButtonPressed(Mouse::Left))
 	{
+		//so that we dont press a state underneath a button
+		bool isButtonPressed = false;
+
 		//go through all buttons' hit boxes, if the mouse location is within the button, do the button's callback function then leave
-		for (int i = buttonHitBoxes.size()-1; i > -1; i--)
+		//backwards because the items further down the list are rendered on the screen first
+		for (int i = buttons.size()-1; i >= 0 ; i--)
 		{
-			if (isWithinHitbox(Vector2f(Mouse::getPosition(g_window)), buttonHitBoxes[i]))
+			if (isWithinHitbox(Vector2f(Mouse::getPosition(g_window)), buttons[i].hitBox))
 			{
-				buttonHitBoxes[i].callBackFunction();
-				//we also don't want to be pressing on states through a button, so break here 
-				//(the items lower down in the "buttonHitBoxes" list get a higher priority because their update functions would have been called last
-				//and therefore would have been drawn on top of everything else on the screen)
-				break;
+				buttons[i].callBackFunction();
+				isButtonPressed = true;
+				break;	//so we dont trigger multiple hitboxes with one click
+			}
+		}
+
+		if (!isButtonPressed)
+		{
+			//same thing but with states
+			for (int i = states.size() - 1; i >= 0; i--)
+			{
+				if (isWithinHitbox(Vector2f(Mouse::getPosition(g_window)), states[i].hitBox))
+				{
+					states[i].printInfo();
+					break;	//so we dont trigger multiple hitboxes with one click
+				}
 			}
 		}
 	}

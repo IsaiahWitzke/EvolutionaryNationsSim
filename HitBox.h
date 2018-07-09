@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML\Graphics.hpp>
+#include <functional>
 
 using namespace std;
 using namespace sf;
@@ -14,11 +15,8 @@ public:
 	Vector2f topLeft;
 	Vector2f bottomRight;
 
-	//a callback function for when the button is hit
-	void(*callBackFunction)();
-
 	HitBox();	//does nothing
-	HitBox(Vector2f topLeft, Vector2f bottomRight, void (*callBackFunction)());
+	HitBox(Vector2f topLeft, Vector2f bottomRight);
 	~HitBox();
 };
 

@@ -3,8 +3,10 @@
 #include <sfml/Graphics.hpp>
 #include "Nation.h"
 #include "HitBox.h"
+#include <functional>
 
 using namespace sf;
+using namespace std;
 
 class Nation;
 
@@ -33,8 +35,8 @@ public:
 
 	//a hit box for our state so we can click on it and it will output information to the console
 	HitBox hitBox;
-	void(*callBackFunction)();	//when the hit box is hit it will call this function
-	void printInfo();			//this is the function that the callback function will become the callback
+
+	void printInfo(); //when the hit box is hit it will call this function
 
 	State(bool isWater, Vector2f position, Vector2i positionInMap);
 	~State();

@@ -37,9 +37,9 @@ ButtonTemplate::ButtonTemplate(string picturePath, Vector2f position, void (*cal
 	//setting up the hit box
 	float bottomLeftX = sprite.getPosition().x + (sprite.getScale().x*size.x);
 	float bottomLeftY = sprite.getPosition().y + (sprite.getScale().y*size.y);
-	HitBox newHitBox(sprite.getPosition(), Vector2f(bottomLeftX, bottomLeftY), callBackFunction);
+	HitBox newHitBox(sprite.getPosition(), Vector2f(bottomLeftX, bottomLeftY));
 	this->hitBox = newHitBox;
-	g_inputHandler.buttonHitBoxes.push_back(hitBox);
+	g_inputHandler.buttons.push_back(*this);
 }
 
 ButtonTemplate::~ButtonTemplate()
@@ -51,9 +51,8 @@ void ButtonTemplate::update()
 	//updating the hit box (probably doesn't need to be done for stationary buttons, but here for future ui improvements, ie: moving buttons?)
 	float bottomLeftX = sprite.getPosition().x + (sprite.getScale().x*size.x);
 	float bottomLeftY = sprite.getPosition().y + (sprite.getScale().y*size.y);
-	HitBox newHitBox(sprite.getPosition(), Vector2f(bottomLeftX, bottomLeftY), callBackFunction);
+	HitBox newHitBox(sprite.getPosition(), Vector2f(bottomLeftX, bottomLeftY));
 	this->hitBox = newHitBox;
-	g_inputHandler.buttonHitBoxes.push_back(hitBox);
-
+	g_inputHandler.buttons.push_back(*this);
 	g_window.draw(this->sprite);
 }

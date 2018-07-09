@@ -23,12 +23,11 @@ Texture State::makeDefaultTexture()
 	return texture;
 }
 
-//will become the callback function
-//NOTE: this is a global function at the moment, I didn't know how to make a pointer to a function in a scope without the scope messing with it
+//when pressed. this fires
 void State::printInfo()
 {
-	cout << "State info: " << endl;
-	cout << "Is it water? " << this->isWater << endl;
+	printf("State info:\n");
+	cout << "Water? " << isWater << endl;
 }
 
 State::State(bool isWater, Vector2f position, Vector2i positionInMap)
@@ -52,12 +51,12 @@ State::State(bool isWater, Vector2f position, Vector2i positionInMap)
 
 	//setting up the hit box
 	//callback function
-	this->callBackFunction = &printInfo;
+	//this->callBackFunction = []() { printInfo; };
 	float bottomLeftX = sprite.getPosition().x + (sprite.getScale().x*size.x);
 	float bottomLeftY = sprite.getPosition().y + (sprite.getScale().y*size.y);
-	HitBox newHitBox(sprite.getPosition(), Vector2f(bottomLeftX, bottomLeftY), callBackFunction);
+	HitBox newHitBox(sprite.getPosition(), Vector2f(bottomLeftX, bottomLeftY));
 	this->hitBox = newHitBox;
-	g_inputHandler.buttonHitBoxes.push_back(hitBox);
+	g_inputHandler.states.push_back(*this);
 }
 
 void State::update()
@@ -86,11 +85,11 @@ void State::update()
 	g_window.draw(sprite);
 
 	//updating the hit box
-	float bottomLeftX = sprite.getPosition().x + (sprite.getScale().x*size.x);
-	float bottomLeftY = sprite.getPosition().y + (sprite.getScale().y*size.y);
-	HitBox newHitBox(sprite.getPosition(), Vector2f(bottomLeftX, bottomLeftY), callBackFunction);
+	float bottomLeftX = sprite.getPosition().x + (sprite.getScale().x*size.x)/3;
+	float bottomLeftY = sprite.getPosition().y + (sprite.getScale().y*size.y)/3;
+	HitBox newHitBox(sprite.getPosition(), Vector2f(bottomLeftX, bottomLeftY));
 	this->hitBox = newHitBox;
-	g_inputHandler.buttonHitBoxes.push_back(hitBox);
+	g_inputHandler.states.push_back(*this);
 }
 
 

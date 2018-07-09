@@ -59,6 +59,7 @@ void MapHandler::updateStates()
 			states[x][y].update();
 		}
 	}
+
 }
 
 

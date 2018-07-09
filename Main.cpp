@@ -25,7 +25,21 @@ InputHandler g_inputHandler;
 
 void testFunc()
 {
-	printf("hello\n");
+	printf("gu hello\n");
+}
+
+//everythime the screen needs to be updated this is called
+void g_update(vector<ButtonTemplate> buttons)
+{
+	g_window.clear();
+	g_inputHandler.buttons.clear();	//want to get rid of all buttons and states because the update functions add them back in
+	g_inputHandler.states.clear();
+	g_map.updateStates();
+	for (int i = 0; i < buttons.size(); i++)
+	{
+		buttons[i].update();
+	}
+	g_window.display();
 }
 
 int main()
@@ -34,17 +48,14 @@ int main()
 
 	ButtonTemplate testButton("Assets/TestButton.bmp", Vector2f(10, 10), callBackFunc, 5);
 
-	//need to link buttons to the input handler
-	g_inputHandler.buttonHitBoxes.push_back(testButton.hitBox);
+	vector<ButtonTemplate> allButtons{ testButton };
 
 	Nation testNation(Color(255, 0, 0, 255));
 	testNation.addContolledState(&g_map.states[0][0]);
 	testNation.addContolledState(&g_map.states[1][0]);
 
 	//initially draw stuff to screen.
-	testButton.update();
-	g_map.updateStates();
-	g_window.display();
+	g_update(allButtons);
 
 	//For refreshing the screen periodically (currently 30fps)
 	Clock screenRefreshClock;
@@ -72,11 +83,7 @@ int main()
 			{
 				//may need to fix this issue later on...
 				//every time there is a new event, we want to redraw stuff to screen (makes screen it seem smoother)
-				g_window.clear();
-				g_inputHandler.buttonHitBoxes.empty();	//want to get rid of all buttons because the update functions add them back in
-				g_map.updateStates();
-				testButton.update();
-				g_window.display();
+				g_update(allButtons);
 			}
 		}
 		
@@ -84,11 +91,7 @@ int main()
 		if (screenRefreshClock.getElapsedTime() >= screenRefreshTime)
 		{
 			screenRefreshClock.restart();
-			g_window.clear();
-			g_inputHandler.buttonHitBoxes.clear();	//want to get rid of all buttons because the update functions add them back in
-			g_map.updateStates();
-			testButton.update();
-			g_window.display();
+			g_update(allButtons);
 		}
 
 		//updating nations periodically

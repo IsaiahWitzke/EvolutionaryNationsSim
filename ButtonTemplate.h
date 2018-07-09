@@ -3,7 +3,7 @@
 #include <iostream>
 #include "HitBox.h"
 #include "sfml/Graphics.hpp"
-
+#include <functional>
 
 using namespace std;
 using namespace sf;
@@ -27,7 +27,7 @@ public:
 	void update();
 
 	//the function we want the button to do when pressed:
-	void(*callBackFunction)();
+	function<void()> callBackFunction;
 
 	HitBox hitBox;
 };

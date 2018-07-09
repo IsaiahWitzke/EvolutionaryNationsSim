@@ -9,10 +9,9 @@ HitBox::HitBox()
 	//cout << "default hit box constructor" << endl;
 }
 
-HitBox::HitBox(Vector2f topLeft, Vector2f bottomRight, void(*callBackFunction)())
+HitBox::HitBox(Vector2f topLeft, Vector2f bottomRight)
 {
 	//cout << "NOT default hit box constructor" << endl;
-	this->callBackFunction = callBackFunction;
 	this->topLeft = topLeft;
 	this->bottomRight = bottomRight;
 }

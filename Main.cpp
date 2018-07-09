@@ -29,7 +29,7 @@ void testFunc()
 }
 
 //everythime the screen needs to be updated this is called
-void g_update(vector<ButtonTemplate> buttons)
+void g_update(vector<ButtonTemplate> &buttons)
 {
 	g_window.clear();
 	g_inputHandler.buttons.clear();	//want to get rid of all buttons and states because the update functions add them back in
@@ -40,6 +40,14 @@ void g_update(vector<ButtonTemplate> buttons)
 		buttons[i].update();
 	}
 	g_window.display();
+}
+
+void g_updateNations(vector<Nation> &nations)
+{
+	for (int i = 0; i < nations.size(); i++)
+	{
+		nations[i].update();
+	}
 }
 
 int main()
@@ -53,6 +61,14 @@ int main()
 	Nation testNation(Color(255, 0, 0, 255));
 	testNation.addContolledState(&g_map.states[0][0]);
 	testNation.addContolledState(&g_map.states[1][0]);
+
+	Nation testNation2(Color(104, 0, 204, 255));
+	testNation2.addContolledState(&g_map.states[2][0]);
+
+	Nation testNation3(Color(255, 255, 100, 255));
+	testNation3.addContolledState(&g_map.states[4][4]);
+
+	vector<Nation> allNations{ testNation, testNation2, testNation3 };
 
 	//initially draw stuff to screen.
 	g_update(allButtons);
@@ -97,8 +113,10 @@ int main()
 		//updating nations periodically
 		if (nationUpdateClock.getElapsedTime() >= nationUpdateTime)
 		{
+			g_updateNations(allNations);
+			/*testNation.update();
+			testNation2.update();*/
 			nationUpdateClock.restart();
-			testNation.update();
 		}
 	}
 

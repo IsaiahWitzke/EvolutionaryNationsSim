@@ -28,7 +28,7 @@ void testFunc()
 	printf("gu hello\n");
 }
 
-//everythime the screen needs to be updated this is called
+//everytime the screen needs to be updated this is called
 void g_update(vector<ButtonTemplate> &buttons)
 {
 	g_window.clear();
@@ -42,11 +42,11 @@ void g_update(vector<ButtonTemplate> &buttons)
 	g_window.display();
 }
 
-void g_updateNations(vector<Nation> &nations)
+void g_updateNations()
 {
-	for (int i = 0; i < nations.size(); i++)
+	for (int i = 0; i < g_map.nations.size(); i++)
 	{
-		nations[i].update();
+		g_map.nations[i].update();
 	}
 }
 
@@ -57,18 +57,6 @@ int main()
 	ButtonTemplate testButton("Assets/TestButton.bmp", Vector2f(10, 10), callBackFunc, 5);
 
 	vector<ButtonTemplate> allButtons{ testButton };
-
-	Nation testNation(Color(255, 0, 0, 255));
-	testNation.addContolledState(&g_map.states[0][0]);
-	testNation.addContolledState(&g_map.states[1][0]);
-
-	Nation testNation2(Color(104, 0, 204, 255));
-	testNation2.addContolledState(&g_map.states[2][0]);
-
-	Nation testNation3(Color(255, 255, 100, 255));
-	testNation3.addContolledState(&g_map.states[4][4]);
-
-	vector<Nation> allNations{ testNation, testNation2, testNation3 };
 
 	//initially draw stuff to screen.
 	g_update(allButtons);
@@ -113,9 +101,7 @@ int main()
 		//updating nations periodically
 		if (nationUpdateClock.getElapsedTime() >= nationUpdateTime)
 		{
-			g_updateNations(allNations);
-			/*testNation.update();
-			testNation2.update();*/
+			g_updateNations();
 			nationUpdateClock.restart();
 		}
 	}

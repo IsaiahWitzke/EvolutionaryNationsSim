@@ -1,5 +1,6 @@
-﻿  Main.cpp
-c:\users\witzk\documents\github\evolutionarynationssim\main.cpp(38): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\main.cpp(47): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\main.cpp(78): warning C4305: 'argument': truncation from 'double' to 'float'
+﻿  MapHandler.cpp
+c:\users\witzk\documents\github\evolutionarynationssim\maphandler.cpp(64): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\maphandler.cpp(94): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\maphandler.cpp(96): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\maphandler.cpp(118): warning C4715: 'MapHandler::readBMP': not all control paths return a value
   EvolutionaryNationsSim.vcxproj -> C:\Users\witzk\Documents\GitHub\EvolutionaryNationsSim\Debug\EvolutionaryNationsSim.exe

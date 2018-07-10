@@ -11,19 +11,15 @@ using namespace std;
 MapHandler::MapHandler()
 {
 	//all the different .bmp file names
-	string landMap = "Maps/LandMap.bmp";
+	string landMapPath = "Maps/LandMap.bmp";
+	string nationStartsPath = "Maps/NationStarts.bmp";
 
-	Image tempMap = readBMP(landMap);
+	Image landMap = readBMP(landMapPath);
 
 	//for future reference. This is what the size of the map should stay at across all pictures
 	//if it changes, we know there is a size discrepancy between the map images 
-
-
-	this->width = tempMap.getSize().x;
-	this->height = tempMap.getSize().y;
-
-	int referenceWidth = width; 
-	int referenceHeight = height;
+	this->width = landMap.getSize().x;
+	this->height = landMap.getSize().y;
 
 	//making 2D vector of states
 	for (int x = 0; x < width; x++)
@@ -34,7 +30,7 @@ MapHandler::MapHandler()
 		{
 			bool isWater;
 			//black pixels are land, white is water
-			if (tempMap.getPixel(x, y) == Color(255, 255, 255, 255))
+			if (landMap.getPixel(x, y) == Color(255, 255, 255, 255))
 				isWater = true;
 			else
 				isWater = false;
@@ -43,6 +39,49 @@ MapHandler::MapHandler()
 		}
 		this->states.push_back(column);
 	}
+
+	//initializing the nations
+	Image nationStartsMap = readBMP(nationStartsPath);
+	
+	//first, check if the sizes of the pictutres are the same, if they arent, error
+	if (width != nationStartsMap.getSize().x || height != nationStartsMap.getSize().y)
+	{
+		cout << "Map images are not the same size" << endl;
+		system("pause");
+	}
+
+	//going through all the pixels
+	for (int x = 0; x < width; x++)
+	{
+		for (int y = 0; y < height; y++)
+		{
+			//any pixel that is not white is a start state of a nation
+			if (nationStartsMap.getPixel(x, y) != Color(255, 255, 255, 255))
+			{
+				//before we make a new nation, we need to make sure that the color isn't the same as a nation already made
+				bool isNewNation = true;
+
+				for (int i = 0; i < nations.size(); i++)
+				{
+					if (nations[i].nationColor == nationStartsMap.getPixel(x, y))
+					{
+						isNewNation = false;
+						//add to the nation of the same color
+						nations[i].addContolledState(&states[x][y]);
+					}
+				}
+
+				//initializing a new nation with the state
+				if (isNewNation)
+				{
+					nations.push_back(Nation(nationStartsMap.getPixel(x, y)));
+					nations[nations.size() - 1].addContolledState(&states[x][y]);
+				}
+			}
+		}
+	}
+
+
 }
 
 MapHandler::~MapHandler()
@@ -61,8 +100,6 @@ void MapHandler::updateStates()
 	}
 
 }
-
-
 
 Image MapHandler::readBMP(string file)
 {

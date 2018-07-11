@@ -23,15 +23,13 @@ void Nation::addContolledState(State * state)
 	//otherwise we want to set up the two-way link between the nation and the state
 	this->controlledStates.push_back(state);
 	state->controller = this;
+
 }
 
 void Nation::spread()
 {
 	//first, check around every state that the nation controls,
 	//if the nations around the controlled states does not have any owner then "addContolledState" that state
-
-
-	vector<State *> tempControlledStates = controlledStates;
 	int controlledStatesSize = controlledStates.size();
 
 	for (int i = 0; i < controlledStatesSize; i++)
@@ -47,12 +45,12 @@ void Nation::spread()
 			addContolledState(&g_map.states[x - 1][y]);
 		}
 		//to the right
-		if (x != g_map.width && g_map.states[x + 1][y].controller == NULL)
+		if (x != g_map.width-1 && g_map.states[x + 1][y].controller == NULL)
 		{
 			addContolledState(&g_map.states[x + 1][y]);
 		}
 		//down
-		if (y != g_map.height && g_map.states[x][y + 1].controller == NULL)
+		if (y != g_map.height-1 && g_map.states[x][y + 1].controller == NULL)
 		{
 			addContolledState(&g_map.states[x][y + 1]);
 		}

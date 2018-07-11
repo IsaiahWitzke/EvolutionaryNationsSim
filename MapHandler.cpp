@@ -55,6 +55,15 @@ MapHandler::MapHandler()
 	{
 		for (int y = 0; y < height; y++)
 		{
+			if (states[1][1].controller != NULL)
+			{
+				cout << x << "," << y << " " << int(states[1][1].controller->nationColor.g) << endl;
+			}
+			else
+			{
+				cout << "null" << endl;
+			}
+			
 			//any pixel that is not white is a start state of a nation
 			if (nationStartsMap.getPixel(x, y) != Color(255, 255, 255, 255))
 			{
@@ -63,24 +72,36 @@ MapHandler::MapHandler()
 
 				for (int i = 0; i < nations.size(); i++)
 				{
-					if (nations[i].nationColor == nationStartsMap.getPixel(x, y))
+					if (nations[i]->nationColor == nationStartsMap.getPixel(x, y))
 					{
 						isNewNation = false;
 						//add to the nation of the same color
-						nations[i].addContolledState(&states[x][y]);
+						nations[i]->addContolledState(&states[x][y]);
 					}
 				}
 
-				//initializing a new nation with the state
+				//initializing a new nation with the state at the current x,y position
 				if (isNewNation)
 				{
-					nations.push_back(Nation(nationStartsMap.getPixel(x, y)));
-					nations[nations.size() - 1].addContolledState(&states[x][y]);
+					if (x == 2 && y == 15)
+					{
+						cout << "" << endl;
+					}
+
+					Nation *tempNation = new Nation(nationStartsMap.getPixel(x, y));
+
+					this->nations.push_back(tempNation);
+
+					this->nations[nations.size()-1]->addContolledState(&states[x][y]);	// the last nation in the array will be the one we are trying to update
+
+					cout << "" << endl;
+
 				}
 			}
 		}
 	}
 
+	cout << int(states[1][1].controller->nationColor.g) << endl;
 
 }
 

@@ -32,7 +32,7 @@ void testFunc()
 void g_update(vector<ButtonTemplate> &buttons)
 {
 	g_window.clear();
-	g_inputHandler.buttons.clear();	//want to get rid of all buttons and states because the update functions add them back in
+	g_inputHandler.buttons.clear();	//want to get rid of all buttons and states because their update functions add them back in
 	g_inputHandler.states.clear();
 	g_map.updateStates();
 	for (int i = 0; i < buttons.size(); i++)
@@ -46,7 +46,7 @@ void g_updateNations()
 {
 	for (int i = 0; i < g_map.nations.size(); i++)
 	{
-		g_map.nations[i].update();
+		g_map.nations[i]->update();
 	}
 }
 

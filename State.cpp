@@ -47,11 +47,10 @@ State::State(bool isWater, Vector2f position, Vector2i positionInMap)
 		this->color = Color(0, 255, 0, 255);
 
 	this->controller = NULL;
-	this->position = position;
+	this->position.x = position.x * 3;
+	this->position.y = position.y * 3;
 
-	//setting up the hit box
-	//callback function
-	//this->callBackFunction = []() { printInfo; };
+	//hitbox setup
 	float bottomLeftX = sprite.getPosition().x + (sprite.getScale().x*size.x);
 	float bottomLeftY = sprite.getPosition().y + (sprite.getScale().y*size.y);
 	HitBox newHitBox(sprite.getPosition(), Vector2f(bottomLeftX, bottomLeftY));
@@ -85,8 +84,8 @@ void State::update()
 	g_window.draw(sprite);
 
 	//updating the hit box
-	float bottomLeftX = sprite.getPosition().x + (sprite.getScale().x*size.x)/3;
-	float bottomLeftY = sprite.getPosition().y + (sprite.getScale().y*size.y)/3;
+	float bottomLeftX = sprite.getPosition().x + (sprite.getScale().x*size.x);
+	float bottomLeftY = sprite.getPosition().y + (sprite.getScale().y*size.y);
 	HitBox newHitBox(sprite.getPosition(), Vector2f(bottomLeftX, bottomLeftY));
 	this->hitBox = newHitBox;
 	g_inputHandler.states.push_back(*this);

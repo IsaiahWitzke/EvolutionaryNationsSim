@@ -29,7 +29,7 @@ public:
 	vector< vector<State> > states;
 
 	//all the nations of the world
-	vector <Nation> nations;
+	vector <Nation*> nations;
 
 	MapHandler();
 	~MapHandler();

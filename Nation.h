@@ -5,6 +5,7 @@
 #include "MapHandler.h"
 #include <vector>
 #include <iostream>
+#include <string>
 
 
 using namespace sf;
@@ -23,9 +24,13 @@ public:
 	vector<State *> controlledStates;
 
 	Color nationColor;
+	string nationName;
 	
-	Nation(Color color);
+	Nation(Color color, string name);
 	~Nation();
+
+	//print out the nation's information
+	void printInfo();
 
 	//to add states to this nation's control, the following function should be called:
 	void addContolledState(State* state);

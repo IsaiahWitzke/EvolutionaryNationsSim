@@ -1,5 +1,2 @@
-﻿  Main.cpp
-c:\users\witzk\documents\github\evolutionarynationssim\main.cpp(38): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\main.cpp(47): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\main.cpp(66): warning C4305: 'argument': truncation from 'double' to 'float'
+﻿  State.cpp
   EvolutionaryNationsSim.vcxproj -> C:\Users\witzk\Documents\GitHub\EvolutionaryNationsSim\Debug\EvolutionaryNationsSim.exe

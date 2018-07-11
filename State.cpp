@@ -26,8 +26,18 @@ Texture State::makeDefaultTexture()
 //when pressed. this fires
 void State::printInfo()
 {
-	printf("State info:\n");
-	cout << "Water? " << isWater << endl;
+	cout << endl << "=========================" << endl;
+
+	cout << "State info:" << endl;
+
+	//as long as the state thet we are pressing has a controller, we want to print that nation's info
+	if (this->controller != NULL)
+	{
+		cout << endl;
+		this->controller->printInfo();
+	}
+
+	cout << "=========================" << endl;
 }
 
 State::State(bool isWater, Vector2f position, Vector2i positionInMap)

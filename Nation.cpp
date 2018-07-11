@@ -3,13 +3,21 @@
 
 extern MapHandler g_map;
 
-Nation::Nation(Color color)
+Nation::Nation(Color color, string name)
 {
 	this->nationColor = color;
+	this->nationName = name;
 }
 
 Nation::~Nation()
 {
+}
+
+void Nation::printInfo()
+{
+	cout << "Nation Info:" << endl;
+	cout << "Name: " << this->nationName << endl;
+	cout << "Size: " << this->controlledStates.size() << " states" << endl;
 }
 
 void Nation::addContolledState(State * state)

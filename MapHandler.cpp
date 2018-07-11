@@ -13,6 +13,7 @@ MapHandler::MapHandler()
 	//all the different .bmp file names
 	string landMapPath = "Maps/LandMap.bmp";
 	string nationStartsPath = "Maps/NationStarts.bmp";
+	string nationNamesPath = "Assets/NationNames.txt";
 
 	Image landMap = readBMP(landMapPath);
 
@@ -54,16 +55,7 @@ MapHandler::MapHandler()
 	for (int x = 0; x < width; x++)
 	{
 		for (int y = 0; y < height; y++)
-		{
-			if (states[1][1].controller != NULL)
-			{
-				cout << x << "," << y << " " << int(states[1][1].controller->nationColor.g) << endl;
-			}
-			else
-			{
-				cout << "null" << endl;
-			}
-			
+		{			
 			//any pixel that is not white is a start state of a nation
 			if (nationStartsMap.getPixel(x, y) != Color(255, 255, 255, 255))
 			{
@@ -83,25 +75,70 @@ MapHandler::MapHandler()
 				//initializing a new nation with the state at the current x,y position
 				if (isNewNation)
 				{
-					if (x == 2 && y == 15)
+					//finding the name of the nation in the "NationNames.txt" file (found in the assets folder)
+					string newNationName = "";
+					string lineInTxt;
+					ifstream myfile(nationNamesPath);
+					if (myfile.is_open())
 					{
-						cout << "" << endl;
+						//a flag that turns true once a valid nation name has been found
+						bool foundNationName = false;
+						while (getline(myfile, lineInTxt) && !foundNationName)
+						{
+							if (nations.size() != 0)
+							{
+								//making sure that there is no nation already named the nation name
+								bool foundSimillarNationName = false;
+								for (int i = 0; i < nations.size(); i++)
+								{
+									//if we found a simmilar nation name, then we want to get a new line from the txt and try again
+									if (nations[i]->nationName == lineInTxt)
+									{
+										foundSimillarNationName = true;
+									}
+								}
+								if (foundSimillarNationName)
+									continue;
+								else
+								{
+									newNationName = lineInTxt;
+									foundNationName = true;
+								}
+									 
+							}
+							else
+							{
+								newNationName = lineInTxt;
+								foundNationName = true;
+							}
+							
+						}
+						//if we havent found a nation name, give an error:
+						if (!foundNationName)
+						{
+							cout << "Unable to find enough unique names in file " << nationNamesPath << " try adding some new nation names?" << endl;
+							myfile.close();
+							system("pause");
+						}
+
+						myfile.close();
 					}
-
-					Nation *tempNation = new Nation(nationStartsMap.getPixel(x, y));
-
+					else
+					{
+						cout << "Unable to open file " << nationNamesPath << endl;
+						system("pause");
+					}
+					Nation *tempNation = new Nation(nationStartsMap.getPixel(x, y), newNationName);
+					
+					//adding the nation to the array of nations
 					this->nations.push_back(tempNation);
-
 					this->nations[nations.size()-1]->addContolledState(&states[x][y]);	// the last nation in the array will be the one we are trying to update
-
-					cout << "" << endl;
-
 				}
 			}
 		}
 	}
 
-	cout << int(states[1][1].controller->nationColor.g) << endl;
+	//after we make the nations, we want to give them names
 
 }
 

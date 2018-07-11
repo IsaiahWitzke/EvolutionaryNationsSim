@@ -1,5 +1,4 @@
-// EvolutionaryNationsSim.cpp : Defines the entry point for the console application.
-//
+// Main.cpp : Defines the entry point for the console application.
 
 #include "stdafx.h"
 #include "State.h"
@@ -25,7 +24,7 @@ InputHandler g_inputHandler;
 
 void testFunc()
 {
-	printf("gu hello\n");
+	printf("test button pressed\n");
 }
 
 //everytime the screen needs to be updated this is called

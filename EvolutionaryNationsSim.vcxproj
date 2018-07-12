@@ -144,6 +144,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ButtonHandler.h" />
     <ClInclude Include="ButtonTemplate.h" />
     <ClInclude Include="HitBox.h" />
     <ClInclude Include="InputHandler.h" />
@@ -154,6 +155,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ButtonHandler.cpp" />
     <ClCompile Include="ButtonTemplate.cpp" />
     <ClCompile Include="HitBox.cpp" />
     <ClCompile Include="InputHandler.cpp" />

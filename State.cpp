@@ -7,6 +7,8 @@ extern float GLOBALSCALE;
 extern Vector2f GLOBALOFFSET;
 extern RenderWindow g_window;
 extern InputHandler g_inputHandler;
+extern MapHandler g_map;
+
 using namespace std;
 
 Texture State::makeDefaultTexture()
@@ -26,9 +28,10 @@ Texture State::makeDefaultTexture()
 //when pressed. this fires
 void State::printInfo()
 {
-	cout << endl << "=========================" << endl;
+	system("CLS");
 
 	cout << "State info:" << endl;
+	cout << "Development: " << development << endl;
 
 	//as long as the state thet we are pressing has a controller, we want to print that nation's info
 	if (this->controller != NULL)
@@ -36,11 +39,9 @@ void State::printInfo()
 		cout << endl;
 		this->controller->printInfo();
 	}
-
-	cout << "=========================" << endl;
 }
 
-State::State(bool isWater, Vector2f position, Vector2i positionInMap)
+State::State(bool isWater, Vector2f position, Vector2i positionInMap, int development)
 {
 	//sprite stuff
 	sprite.setTexture(makeDefaultTexture());
@@ -49,10 +50,14 @@ State::State(bool isWater, Vector2f position, Vector2i positionInMap)
 	//some state data stuff
 	this->positionInMap = positionInMap;
 	this->isWater = isWater;
+	this->development = development;
 
 	//if there is water, we want the sprite to be blue, otherwise it is green
 	if (isWater)
+	{
 		this->color = Color(0, 0, 255, 255);
+		this->development = 0;	// also the development of a water province is 0
+	}
 	else
 		this->color = Color(0, 255, 0, 255);
 
@@ -70,19 +75,29 @@ State::State(bool isWater, Vector2f position, Vector2i positionInMap)
 
 void State::update()
 {
-	//every nation has a different color, if there is no controlling nation, then make it a green default color or a blue water
-	if (controller != NULL)
+	//the colors of the map
+	switch (g_map.mapMode)
 	{
-		this->color = controller->nationColor;
-	}
-	else
-	{
-		if (isWater)
-			this->color = Color(0, 0, 255, 255);
+	case MapMode::default:
+		//every nation has a different color, if there is no controlling nation, then make it a green land or a blue water
+		if (controller != NULL)
+		{
+			this->color = controller->nationColor;
+		}
 		else
-			this->color = Color(0, 255, 0, 255);
-	}
+		{
+			if (isWater)
+				this->color = Color(0, 0, 255, 255);
+			else
+				this->color = Color(0, 255, 0, 255);
+		}
+		break;
 
+	case MapMode::development:
+		this->color = Color(0, development, 0, 255);
+		break;
+	}
+	
 	this->sprite.setColor(color);
 	
 	//updating position on screen stuff

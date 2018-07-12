@@ -14,6 +14,7 @@ MapHandler::MapHandler()
 	string landMapPath = "Maps/LandMap.bmp";
 	string nationStartsPath = "Maps/NationStarts.bmp";
 	string nationNamesPath = "Assets/NationNames.txt";
+	string developmentMapPath = "Maps/developmentMap.bmp";
 
 	Image landMap = readBMP(landMapPath);
 
@@ -21,6 +22,16 @@ MapHandler::MapHandler()
 	//if it changes, we know there is a size discrepancy between the map images 
 	this->width = landMap.getSize().x;
 	this->height = landMap.getSize().y;
+
+	//for giving the states different development values
+	Image developmentMap = readBMP(developmentMapPath);
+
+	//first, check if the sizes of the pictutres are the same, if they arent, error
+	if (width != developmentMap.getSize().x || height != developmentMap.getSize().y)
+	{
+		cout << "Map images are not the same size" << "problem with developmentMap" << endl;
+		system("pause");
+	}
 
 	//making 2D vector of states
 	for (int x = 0; x < width; x++)
@@ -36,7 +47,7 @@ MapHandler::MapHandler()
 			else
 				isWater = false;
 
-			column.push_back(State(isWater, Vector2f(x*GLOBALSCALE, y*GLOBALSCALE), Vector2i(x, y) ) );
+			column.push_back(State(isWater, Vector2f(x*GLOBALSCALE, y*GLOBALSCALE), Vector2i(x, y), developmentMap.getPixel(x, y).g ) );
 		}
 		this->states.push_back(column);
 	}
@@ -47,11 +58,11 @@ MapHandler::MapHandler()
 	//first, check if the sizes of the pictutres are the same, if they arent, error
 	if (width != nationStartsMap.getSize().x || height != nationStartsMap.getSize().y)
 	{
-		cout << "Map images are not the same size" << endl;
+		cout << "Map images are not the same size" << "problem with nationStartsMap" << endl;
 		system("pause");
 	}
 
-	//going through all the pixels
+	//going through all the pixels for nation starts
 	for (int x = 0; x < width; x++)
 	{
 		for (int y = 0; y < height; y++)
@@ -137,9 +148,6 @@ MapHandler::MapHandler()
 			}
 		}
 	}
-
-	//after we make the nations, we want to give them names
-
 }
 
 MapHandler::~MapHandler()
@@ -153,6 +161,7 @@ void MapHandler::updateStates()
 	{
 		for (int y = 0; y < states[0].size(); y++)
 		{
+
 			states[x][y].update();
 		}
 	}

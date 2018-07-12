@@ -5,6 +5,7 @@
 #include "MapHandler.h"
 #include "InputHandler.h"
 #include "ButtonTemplate.h"
+#include "ButtonHandler.h"
 #include <iostream>
 #include <sfml/Graphics.hpp>
 
@@ -22,21 +23,19 @@ MapHandler g_map;
 //all input is handled here
 InputHandler g_inputHandler;
 
-void testFunc()
-{
-	printf("test button pressed\n");
-}
+//all buttons
+ButtonHandler g_buttonHandler;
 
 //everytime the screen needs to be updated this is called
-void g_update(vector<ButtonTemplate> &buttons)
+void g_update()
 {
 	g_window.clear();
 	g_inputHandler.buttons.clear();	//want to get rid of all buttons and states because their update functions add them back in
 	g_inputHandler.states.clear();
 	g_map.updateStates();
-	for (int i = 0; i < buttons.size(); i++)
+	for (int i = 0; i < g_buttonHandler.buttons.size(); i++)
 	{
-		buttons[i].update();
+		g_buttonHandler.buttons[i].update();
 	}
 	g_window.display();
 }
@@ -51,14 +50,14 @@ void g_updateNations()
 
 int main()
 {
-	void(*callBackFunc)() = &testFunc;
-
-	ButtonTemplate testButton("Assets/TestButton.bmp", Vector2f(10, 10), callBackFunc, 5);
-
-	vector<ButtonTemplate> allButtons{ testButton };
-
+	//buttons
+	void(*callBack)() = &developmentMapMode;
+	g_buttonHandler.buttons.push_back(*new ButtonTemplate("Assets/DevelopmentMapModeButton.bmp", Vector2f(200, 10), callBack, 2));
+	callBack = &defaultMapMode;
+	g_buttonHandler.buttons.push_back(*new ButtonTemplate("Assets/DefaultMapModeButton.bmp", Vector2f(10, 10), callBack, 2));
+	
 	//initially draw stuff to screen.
-	g_update(allButtons);
+	g_update();
 
 	//For refreshing the screen periodically (currently 30fps)
 	Clock screenRefreshClock;
@@ -86,7 +85,7 @@ int main()
 			{
 				//may need to fix this issue later on...
 				//every time there is a new event, we want to redraw stuff to screen (makes screen it seem smoother)
-				g_update(allButtons);
+				g_update();
 			}
 		}
 		
@@ -94,7 +93,7 @@ int main()
 		if (screenRefreshClock.getElapsedTime() >= screenRefreshTime)
 		{
 			screenRefreshClock.restart();
-			g_update(allButtons);
+			g_update();
 		}
 
 		//updating nations periodically

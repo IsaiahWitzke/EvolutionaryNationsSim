@@ -15,6 +15,13 @@ using namespace std;
 class State;
 class Nation;
 
+//global enum for how the map should be drawn:
+enum MapMode
+{
+	default,
+	development
+};
+
 class MapHandler
 {
 private:
@@ -30,6 +37,9 @@ public:
 
 	//all the nations of the world
 	vector <Nation*> nations;
+
+	//the way the world is rendered.
+	MapMode mapMode = MapMode::default;
 
 	MapHandler();
 	~MapHandler();

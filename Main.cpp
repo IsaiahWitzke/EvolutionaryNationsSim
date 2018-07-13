@@ -65,7 +65,7 @@ int main()
 
 	//For refreshing the nations periodically
 	Clock nationUpdateClock;
-	Time nationUpdateTime = seconds(1.5);
+	Time nationUpdateTime = seconds(0.5);
 
 	//main loop
 	while (g_window.isOpen())

@@ -45,6 +45,9 @@
     <ClInclude Include="ButtonHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Diplomacy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -74,5 +77,10 @@
     <ClCompile Include="ButtonHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="EvolutionaryNationsSim.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

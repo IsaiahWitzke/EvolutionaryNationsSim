@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Nation.h"
+#include <windows.h>
 
 extern MapHandler g_map;
 
@@ -83,15 +84,12 @@ void Nation::printInfo()
 	}
 
 	//displaying who the nation is at war with
-	if (isAtWar)
+	if (wars.size() != 0)
 	{
-		cout << "At war with: " << endl;
-		for (int i = 0; i < g_map.nations.size(); i++)
+		cout << "Involved in the following wars: " << endl;
+		for (int i = 0; i < wars.size(); i++)
 		{
-			if (diplomaticRelations[g_map.nations[i]] == DiplomaticRelation::belligerent)
-			{
-				cout << "   " << g_map.nations[i]->nationName << endl;
-			}
+			wars[i]->printInfo();
 		}
 	}
 
@@ -302,48 +300,18 @@ void Nation::warWithStateOffset(int x, int y)
 			diplomaticRelations[possibleBelligerent] != DiplomaticRelation::belligerent &&
 			diplomaticRelations[possibleBelligerent] != DiplomaticRelation::ally)
 		{
+			//changing color of console output
+			HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+			SetConsoleTextAttribute(hConsole, 12);
+			cout << endl;
 			cout << this->nationName << " declares war on " << possibleBelligerent->nationName << endl;
-			this->isAtWar = true;
-			possibleBelligerent->isAtWar = true;
-			this->diplomaticRelations[possibleBelligerent] = DiplomaticRelation::belligerent;
-			possibleBelligerent->diplomaticRelations[this] = DiplomaticRelation::belligerent;
-			possibleBelligerent->diplomaticViews[this] = DiplomaticView::hostile;
-			//calling in allies to war
-			//defenders first
-			vector<Nation *> defenders;
-			for (int i = 0; i < g_map.nations.size(); i++)
-			{
-				if (g_map.nations[i]->diplomaticRelations[possibleBelligerent] == DiplomaticRelation::ally)
-				{
-					g_map.nations[i]->warWith(this);
-					defenders.push_back(g_map.nations[i]);
-				}
-			}
-			//attacker allies get called in as well
-			for (int i = 0; i < g_map.nations.size(); i++)
-			{
-				if (g_map.nations[i]->diplomaticRelations[this] == DiplomaticRelation::ally)
-				{
-					//declare war on the entire defending side
-					for (int i = 0; i < defenders.size(); i++)
-					{
-						g_map.nations[i]->warWith(defenders[i]);
-					}
-				}
-			}
+			SetConsoleTextAttribute(hConsole, 7);
+
+			//actually do war stuff
+			new War(this, possibleBelligerent);
 			return;
 		}
 	}
-}
-
-void Nation::warWith(Nation * newBelligerent)
-{
-	newBelligerent->diplomaticRelations[this] = DiplomaticRelation::belligerent;
-	newBelligerent->isAtWar = true;
-	newBelligerent->decreaseRelations(this);
-	this->diplomaticRelations[newBelligerent] = DiplomaticRelation::belligerent;
-	this->isAtWar = true;
-	this->decreaseRelations(newBelligerent);
 }
 
 void Nation::allyWith(Nation * newAlly)
@@ -397,7 +365,8 @@ void Nation::update()
 
 	declareWarOnEnemyNeighbor();
 
-	if (isAtWar)
+	//if at war attack the enemy army
+	if (wars.size() != 0)
 	{
 		attackEnemyArmy();
 	}
@@ -431,7 +400,7 @@ void Nation::decreaseRelations(Nation *nation)
 
 void Nation::attackEnemyArmy()
 {
-	//the entire army of both sides in the war
-	int enemyArmy = 0;
-	int friendlyArmy = 0; 
+	//look at all wars
+	//if it would be a half decent idea to attack the enemy, then do so
+
 }

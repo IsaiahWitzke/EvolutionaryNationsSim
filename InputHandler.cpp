@@ -32,7 +32,7 @@ InputHandler::~InputHandler()
 
 bool InputHandler::getInput(Event * event)
 {
-	const float PANSPEED = 7;
+	const float PANSPEED = 10;
 	const float SCROLLSPEED = 0.3;
 
 	if (event->type == Event::KeyPressed)
@@ -65,7 +65,6 @@ bool InputHandler::getInput(Event * event)
 			return true;
 		}
 	}
-
 
 	//zooming in and out
 	if (event->type == Event::MouseWheelScrolled)

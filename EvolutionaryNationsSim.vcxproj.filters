@@ -48,6 +48,9 @@
     <ClInclude Include="Diplomacy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="War.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -75,6 +78,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ButtonHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="War.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

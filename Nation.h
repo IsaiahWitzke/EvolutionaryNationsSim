@@ -3,6 +3,7 @@
 #include <sfml/Graphics.hpp>
 #include "State.h"
 #include "MapHandler.h"
+#include "War.h"
 #include <vector>
 #include <iostream>
 #include <string>
@@ -13,6 +14,7 @@ using namespace std;
 
 class State;
 class MapHandler;
+class War;
 
 //different types of diplomatic VIEWPOINTS (that is, how a nation feels about another)
 enum DiplomaticView
@@ -40,8 +42,7 @@ class Nation
 {
 private:
 	void warWithStateOffset(int xOffset, int yOffset);	// to minimize copy/pasting
-	void warWith(Nation * newBelligerent);	// to handle everything associated with going to war
-	void allyWith(Nation * newAlly);	// opposite of "warWith"
+	void allyWith(Nation * newAlly);	// handles the allying another nation
 
 public:
 	
@@ -108,9 +109,9 @@ public:
 	void saveResources();	// won't do anything, leaves the nation's update to save money for the next time around
 
 	//things to do with war
+	vector<War*> wars;	// all the wars that the nation is involved in
 	int army = 1;	// how big/strong the nation's army is
-	float armyDamage = 0;	// how damaged the army is
-	bool isAtWar = false;
+	float armyStrength = 0;	// how damaged the army is
 	int warScore = 0;	// how well the nation is doing in a war, if negative, then they are loosing, if positive, then they are winning
 	//actions that can only be excecuted while at war:
 	void attackEnemyArmy();	// attempts to attack enemy army if army is comprarable or better than enemy's 

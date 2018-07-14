@@ -1,8 +1,3 @@
-﻿  Nation.cpp
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(115): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(170): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(236): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(257): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(259): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(267): warning C4018: '<': signed/unsigned mismatch
+﻿  InputHandler.cpp
+c:\users\witzk\documents\github\evolutionarynationssim\inputhandler.cpp(36): warning C4305: 'initializing': truncation from 'double' to 'float'
   EvolutionaryNationsSim.vcxproj -> C:\Users\witzk\Documents\GitHub\EvolutionaryNationsSim\Debug\EvolutionaryNationsSim.exe

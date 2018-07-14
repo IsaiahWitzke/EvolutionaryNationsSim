@@ -20,12 +20,10 @@ enum DiplomaticView
 	hostile,
 	uneasy,
 	neutral,
-	warming,
+	warm,
 	friendly,
 	close
 };
-
-
 
 //different types of diplomatic relations
 enum DiplomaticRelation
@@ -41,7 +39,9 @@ enum DiplomaticRelation
 class Nation
 {
 private:
-
+	void warWithStateOffset(int xOffset, int yOffset);	// to minimize copy/pasting
+	void warWith(Nation * newBelligerent);	// to handle everything associated with going to war
+	void allyWith(Nation * newAlly);	// opposite of "warWith"
 
 public:
 	
@@ -71,8 +71,8 @@ public:
 	void update();
 
 	//to increase/decrease relations
-	void increaseRelations(DiplomaticView &DV);
-	void decreaseRelations(DiplomaticView &DV);
+	void increaseRelations(Nation *nation);
+	void decreaseRelations(Nation *nation);
 	
 
 	//how much resources the nation has. It is with the resources that the nation can excecute actions
@@ -90,11 +90,15 @@ public:
 	//to find the total development of the nation:
 	int getDevelopment();
 
+	//nations beside eachother might have border conflicts. The longer te border the more chance of conflict
+	void borderConflicts();
+
 	//all the different actions the nation can do:
 	void spread();	// to spread around in every possible direction
 	void colonize();	// attempt to colonize a neighboring state with the most development
 	void improveArmy();	// improves the "army" int by one
 	void declareWarOnEnemyNeighbor();	// if there is a neighbor who is an enemy, and who's strength is relative or weaker than than the current nation's alliance, then go to war
+		
 	void improveRelationsWithNonAlly();	// finds a nation who is not an ally, has a good opinion of the current nation, and attempts to better relations with that nation
 	void improveRelationsWithVassal();	// if there is a vassal who is not friendly, then attempt to improve relations
 	void attemptToIntegrateVassal();	// attempts to integrate a vassal into nation
@@ -104,12 +108,13 @@ public:
 	void saveResources();	// won't do anything, leaves the nation's update to save money for the next time around
 
 	//things to do with war
-	int army = 1;	//how big/strong the nation's army is
+	int army = 1;	// how big/strong the nation's army is
+	float armyDamage = 0;	// how damaged the army is
 	bool isAtWar = false;
-	int warScore = 0;	//how well the nation is doing in a war, if negative, then they are loosing, if positive, then they are winning
+	int warScore = 0;	// how well the nation is doing in a war, if negative, then they are loosing, if positive, then they are winning
 	//actions that can only be excecuted while at war:
 	void attackEnemyArmy();	// attempts to attack enemy army if army is comprarable or better than enemy's 
-							// (+2 warscore and -1 army if successful, -2 warscore and -4 warscore if unsuccessful)
+							// (+2 warscore and +0.2 army damadge if successful, -2 warscore and +1 army damadge if unsuccessful)
 	void occupyEnemyState();	// attempts to occupy a neighboring (+1 warscore, and occupation of state if successful)
 	// to end wars, these are the peace deals that the winner can make:
 	void takeThreeStates();	// will try to take neighboring states with highest development first

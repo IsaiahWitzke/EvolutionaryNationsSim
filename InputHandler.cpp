@@ -7,6 +7,7 @@ using namespace std;
 extern float GLOBALSCALE;
 extern Vector2f GLOBALOFFSET;
 extern RenderWindow g_window;
+extern bool g_isNationUpdate;
 
 bool InputHandler::isWithinHitbox(Vector2f possiblePoint, HitBox hitBox)
 {
@@ -34,27 +35,37 @@ bool InputHandler::getInput(Event * event)
 	const float PANSPEED = 7;
 	const float SCROLLSPEED = 0.3;
 
-	//panning around the map
-	if (Keyboard::isKeyPressed(Keyboard::W))
+	if (event->type == Event::KeyPressed)
 	{
-		GLOBALOFFSET.y += PANSPEED / GLOBALSCALE;
-		return true;
+		//panning around the map
+		if (Keyboard::isKeyPressed(Keyboard::W))
+		{
+			GLOBALOFFSET.y += PANSPEED / GLOBALSCALE;
+			return true;
+		}
+		if (Keyboard::isKeyPressed(Keyboard::S))
+		{
+			GLOBALOFFSET.y -= PANSPEED / GLOBALSCALE;
+			return true;
+		}
+		if (Keyboard::isKeyPressed(Keyboard::D))
+		{
+			GLOBALOFFSET.x -= PANSPEED / GLOBALSCALE;
+			return true;
+		}
+		if (Keyboard::isKeyPressed(Keyboard::A))
+		{
+			GLOBALOFFSET.x += PANSPEED / GLOBALSCALE;
+			return true;
+		}
+		//pausing/unpausing the simulation
+		if (Keyboard::isKeyPressed(Keyboard::Space))
+		{
+			g_isNationUpdate = !g_isNationUpdate;
+			return true;
+		}
 	}
-	if (Keyboard::isKeyPressed(Keyboard::S))
-	{
-		GLOBALOFFSET.y -= PANSPEED / GLOBALSCALE;
-		return true;
-	}
-	if (Keyboard::isKeyPressed(Keyboard::D))
-	{
-		GLOBALOFFSET.x -= PANSPEED / GLOBALSCALE;
-		return true;
-	}
-	if (Keyboard::isKeyPressed(Keyboard::A))
-	{
-		GLOBALOFFSET.x += PANSPEED / GLOBALSCALE;
-		return true;
-	}
+
 
 	//zooming in and out
 	if (event->type == Event::MouseWheelScrolled)

@@ -26,6 +26,9 @@ InputHandler g_inputHandler;
 //all buttons
 ButtonHandler g_buttonHandler;
 
+//if false, then the nations do not update
+bool g_isNationUpdate = true;
+
 //everytime the screen needs to be updated this is called
 void g_update()
 {
@@ -65,6 +68,7 @@ int main()
 
 	//For refreshing the nations periodically
 	Clock nationUpdateClock;
+
 	Time nationUpdateTime = seconds(0.5);
 
 	//main loop
@@ -97,7 +101,7 @@ int main()
 		}
 
 		//updating nations periodically
-		if (nationUpdateClock.getElapsedTime() >= nationUpdateTime)
+		if (nationUpdateClock.getElapsedTime() >= nationUpdateTime && g_isNationUpdate)
 		{
 			g_updateNations();
 			nationUpdateClock.restart();

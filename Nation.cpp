@@ -13,8 +13,8 @@ string Nation::getDiplomaticView(Nation * nation)
 			return "close";
 		case friendly:
 			return "friendly";
-		case warming:
-			return "warming";
+		case warm:
+			return "warm";
 		case neutral:
 			return "neutral";
 		case uneasy:
@@ -85,10 +85,13 @@ void Nation::printInfo()
 	//displaying who the nation is at war with
 	if (isAtWar)
 	{
-		cout << "At war with: ";
-		for (auto& x : diplomaticRelations)
+		cout << "At war with: " << endl;
+		for (int i = 0; i < g_map.nations.size(); i++)
 		{
-			cout << "   " << x.first->nationName << endl;
+			if (diplomaticRelations[g_map.nations[i]] == DiplomaticRelation::belligerent)
+			{
+				cout << "   " << g_map.nations[i]->nationName << endl;
+			}
 		}
 	}
 
@@ -118,6 +121,35 @@ int Nation::getDevelopment()
 	}
 
 	return development;
+}
+
+void Nation::borderConflicts()
+{
+	//for every state that borders another nation, there is a 1% chance of the diplomatic view of this nation decreasing
+	for (int i = 0; i < controlledStates.size(); i++)
+	{
+		//checking states around current one
+		//some relative coordinates
+		int x = controlledStates[i]->positionInMap.x;
+		int y = controlledStates[i]->positionInMap.y;
+		//checking to the left
+		if (x != 0 && g_map.states[x - 1][y].controller != NULL && g_map.states[x - 1][y].controller != this)
+			if (rand() % 100 == 1)	//1% chance
+				decreaseRelations(g_map.states[x - 1][y].controller);
+
+		//to the right
+		if (x != g_map.width - 1 && g_map.states[x + 1][y].controller != NULL && g_map.states[x + 1][y].controller != this)
+			if (rand() % 100 == 1)
+				decreaseRelations(g_map.states[x + 1][y].controller);
+		//down
+		if (y != g_map.height - 1 && g_map.states[x][y + 1].controller != NULL && g_map.states[x][y + 1].controller != this)
+			if (rand() % 100 == 1)
+				decreaseRelations(g_map.states[x][y + 1].controller);
+		//up
+		if (y != 0 && g_map.states[x][y - 1].controller != NULL && g_map.states[x][y - 1].controller != this)
+			if (rand() % 100 == 1)
+				decreaseRelations(g_map.states[x][y - 1].controller);
+	}
 }
 
 void Nation::spread()
@@ -228,6 +260,100 @@ void Nation::improveArmy()
 	}
 }
 
+void Nation::declareWarOnEnemyNeighbor()
+{
+	//for every state that borders another nation, check to see if there is a enemy nation there:
+	for (int i = 0; i < controlledStates.size(); i++)
+	{
+		//checking states around current one
+		//some relative coordinates
+		int x = controlledStates[i]->positionInMap.x;
+		int y = controlledStates[i]->positionInMap.y;
+		
+		//checking to the left
+		x -= 1;
+		warWithStateOffset(x, y);
+		//right
+		x += 2;
+		warWithStateOffset(x, y);
+		//down
+		x -= 1;
+		y += 1;
+		warWithStateOffset(x, y);
+		//up
+		y -= 2;
+		warWithStateOffset(x, y);
+	}
+}
+
+void Nation::warWithStateOffset(int x, int y)
+{
+	//return if the state we are trying to check is outside of the map
+	if (x < 0 || y < 0 || x >= g_map.width || y >= g_map.height)
+		return;
+
+	Nation * possibleBelligerent = g_map.states[x][y].controller;
+
+	//check to see if the neighbooring state is actualy a different nation
+	if (possibleBelligerent != NULL && possibleBelligerent != this)
+	{
+		//checking to see if it is a valid target to declare war on
+		if (diplomaticViews[possibleBelligerent] == DiplomaticView::hostile &&
+			diplomaticRelations[possibleBelligerent] != DiplomaticRelation::belligerent &&
+			diplomaticRelations[possibleBelligerent] != DiplomaticRelation::ally)
+		{
+			cout << this->nationName << " declares war on " << possibleBelligerent->nationName << endl;
+			this->isAtWar = true;
+			possibleBelligerent->isAtWar = true;
+			this->diplomaticRelations[possibleBelligerent] = DiplomaticRelation::belligerent;
+			possibleBelligerent->diplomaticRelations[this] = DiplomaticRelation::belligerent;
+			possibleBelligerent->diplomaticViews[this] = DiplomaticView::hostile;
+			//calling in allies to war
+			//defenders first
+			vector<Nation *> defenders;
+			for (int i = 0; i < g_map.nations.size(); i++)
+			{
+				if (g_map.nations[i]->diplomaticRelations[possibleBelligerent] == DiplomaticRelation::ally)
+				{
+					g_map.nations[i]->warWith(this);
+					defenders.push_back(g_map.nations[i]);
+				}
+			}
+			//attacker allies get called in as well
+			for (int i = 0; i < g_map.nations.size(); i++)
+			{
+				if (g_map.nations[i]->diplomaticRelations[this] == DiplomaticRelation::ally)
+				{
+					//declare war on the entire defending side
+					for (int i = 0; i < defenders.size(); i++)
+					{
+						g_map.nations[i]->warWith(defenders[i]);
+					}
+				}
+			}
+			return;
+		}
+	}
+}
+
+void Nation::warWith(Nation * newBelligerent)
+{
+	newBelligerent->diplomaticRelations[this] = DiplomaticRelation::belligerent;
+	newBelligerent->isAtWar = true;
+	newBelligerent->decreaseRelations(this);
+	this->diplomaticRelations[newBelligerent] = DiplomaticRelation::belligerent;
+	this->isAtWar = true;
+	this->decreaseRelations(newBelligerent);
+}
+
+void Nation::allyWith(Nation * newAlly)
+{
+	newAlly->diplomaticRelations[this] = DiplomaticRelation::ally;
+	newAlly->increaseRelations(this);
+	this->diplomaticRelations[newAlly] = DiplomaticRelation::ally;
+	this->increaseRelations(newAlly);
+}
+
 void Nation::update()
 {
 	//for the first time that the update function is called, we want to initialize the diplomatic views/reationships with other nations
@@ -243,6 +369,9 @@ void Nation::update()
 			this->diplomaticViews.emplace(g_map.nations[i], DiplomaticView::neutral);
 			this->diplomaticRelations.emplace(g_map.nations[i], DiplomaticRelation::nothing);
 		}
+		//everybody is going to ally afganastan for testing purposes:
+		if (this != g_map.nations[0])
+			allyWith(g_map.nations[0]);
 	}
 
 	//IN FUTURE:
@@ -263,32 +392,15 @@ void Nation::update()
 
 	//DIPLOMATIC STUFF
 
-	//for every state that borders another nation, there is a 1% chance of the diplomatic view of this nation decreasing
-	for (int i = 0; i < controlledStates.size(); i++)
+	//chance of decreasing relations with other nations bordering the current country
+	borderConflicts();
+
+	declareWarOnEnemyNeighbor();
+
+	if (isAtWar)
 	{
-		//checking states around current one
-		//some relative coordinates
-		int x = controlledStates[i]->positionInMap.x;
-		int y = controlledStates[i]->positionInMap.y;
-		//checking to the left
-		if (x != 0 && g_map.states[x - 1][y].controller != NULL && g_map.states[x - 1][y].controller != this)
-			if (rand() % 100 == 1)	//1% chance
-				decreaseRelations(this->diplomaticViews[g_map.states[x - 1][y].controller]);
-
-		//to the right
-		if (x != g_map.width - 1 && g_map.states[x + 1][y].controller != NULL && g_map.states[x + 1][y].controller != this)
-			if (rand() % 100 == 1)
-				decreaseRelations(this->diplomaticViews[g_map.states[x + 1][y].controller]);
-		//down
-		if (y != g_map.height - 1 && g_map.states[x][y + 1].controller != NULL && g_map.states[x][y + 1].controller != this)
-			if (rand() % 100 == 1)
-				decreaseRelations(this->diplomaticViews[g_map.states[x][y + 1].controller]);
-		//up
-		if (y != 0 && g_map.states[x][y - 1].controller != NULL && g_map.states[x][y - 1].controller != this)
-			if (rand() % 100 == 1)
-				decreaseRelations(this->diplomaticViews[g_map.states[x][y - 1].controller]);
+		attackEnemyArmy();
 	}
-
 
 	while (true)
 	{
@@ -300,19 +412,26 @@ void Nation::update()
 	}
 }
 
-void Nation::increaseRelations(DiplomaticView & DV)
+void Nation::increaseRelations(Nation *nation)
 {
 	using IntType = typename std::underlying_type<DiplomaticView>::type;
-	if (DV == DiplomaticView::close)	//if we are at the max possible relations, then just leave
+	if (this->diplomaticViews[nation] == DiplomaticView::close)	//if we are at the max possible relations, then just leave
 		return;
-	DV = static_cast<DiplomaticView>(static_cast<IntType>(DV) + 1);
+	this->diplomaticViews[nation] = static_cast<DiplomaticView>(static_cast<IntType>(this->diplomaticViews[nation]) + 1);
 }
 
-void Nation::decreaseRelations(DiplomaticView & DV)
+void Nation::decreaseRelations(Nation *nation)
 {
 	
 	using IntType = typename std::underlying_type<DiplomaticView>::type;
-	if (DV == DiplomaticView::hostile)	//if we are at the min possible relations, then just leave
+	if (this->diplomaticViews[nation] == DiplomaticView::hostile)	//if we are at the min possible relations, then just leave
 		return;
-	DV = static_cast<DiplomaticView>(static_cast<IntType>(DV) - 1);
+	this->diplomaticViews[nation] = static_cast<DiplomaticView>(static_cast<IntType>(this->diplomaticViews[nation]) - 1);
+}
+
+void Nation::attackEnemyArmy()
+{
+	//the entire army of both sides in the war
+	int enemyArmy = 0;
+	int friendlyArmy = 0; 
 }

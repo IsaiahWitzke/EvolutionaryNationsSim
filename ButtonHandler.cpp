@@ -13,7 +13,7 @@ void defaultMapMode()
 	g_map.mapMode = MapMode::default;
 }
 
-void ButtonHandler::updateButtons()
+void ButtonHandler::update()
 {
 	for (int i = 0; i < buttons.size(); i++)
 	{

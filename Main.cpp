@@ -6,6 +6,7 @@
 #include "InputHandler.h"
 #include "ButtonTemplate.h"
 #include "ButtonHandler.h"
+#include "TextHandler.h"
 #include <iostream>
 #include <sfml/Graphics.hpp>
 
@@ -26,6 +27,9 @@ InputHandler g_inputHandler;
 //all buttons
 ButtonHandler g_buttonHandler;
 
+//all text
+TextHandler g_textHandler;
+
 //if false, then the nations do not update
 bool g_isNationUpdate = true;
 
@@ -33,13 +37,11 @@ bool g_isNationUpdate = true;
 void g_update()
 {
 	g_window.clear();
-	g_inputHandler.buttons.clear();	//want to get rid of all buttons and states because their update functions add them back in
+	g_inputHandler.buttons.clear();	//want to get rid of all buttons and states because their update functions will add them back in
 	g_inputHandler.states.clear();
 	g_map.updateStates();
-	for (int i = 0; i < g_buttonHandler.buttons.size(); i++)
-	{
-		g_buttonHandler.buttons[i].update();
-	}
+	g_buttonHandler.update();
+	g_textHandler.update();
 	g_window.display();
 }
 
@@ -59,6 +61,9 @@ int main()
 	callBack = &defaultMapMode;
 	g_buttonHandler.buttons.push_back(*new ButtonTemplate("Assets/DefaultMapModeButton.bmp", Vector2f(10, 10), callBack, 2));
 	
+	//test text
+	g_textHandler.addText("Testing", Vector2f(100, 100), seconds(3));
+
 	//initially draw stuff to screen.
 	g_update();
 
@@ -68,7 +73,6 @@ int main()
 
 	//For refreshing the nations periodically
 	Clock nationUpdateClock;
-
 	Time nationUpdateTime = seconds(0.5);
 
 	//main loop

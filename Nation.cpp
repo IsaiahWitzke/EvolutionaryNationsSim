@@ -363,6 +363,15 @@ void Nation::update()
 	//chance of decreasing relations with other nations bordering the current country
 	borderConflicts();
 
+	//dont want to be in more than 1 war at a time
+	if (wars.size() != 0)
+	{
+		for (int i = 0; i < wars.size(); i++)
+		{
+
+		}
+	}
+
 	declareWarOnEnemyNeighbor();
 
 	//if at war attack the enemy army
@@ -398,9 +407,44 @@ void Nation::decreaseRelations(Nation *nation)
 	this->diplomaticViews[nation] = static_cast<DiplomaticView>(static_cast<IntType>(this->diplomaticViews[nation]) - 1);
 }
 
+void Nation::repairArmy()
+{
+	while (armyStrength < 1 && resources > 15)
+	{
+		armyStrength += 0.1;
+		if (armyStrength > 1)
+			armyStrength = 1;
+		resources -= 15;
+	
+	}
+}
+
 void Nation::attackEnemyArmy()
 {
 	//look at all wars
 	//if it would be a half decent idea to attack the enemy, then do so
+	for (int i = 0; i < wars.size(); i++)
+	{
 
+		//first, figure out if we are the defender
+		bool isDefender = false;
+		for (int j = 0; j < wars[i]->defenders.size(); j++)
+		{
+			if (wars[i]->defenders[j] == this)
+				isDefender = true;
+		}
+
+		//if we are the attacker and the "chanceOfWinningBattle" is > 0.5, then do it
+		if (float(wars[i]->chanceOfWinningBattle()) > 0.5 && !isDefender)
+		{
+			wars[i]->battle();
+			continue;
+		}
+		//if we are the defender and the "chanceOfWinningBattle" is < 0.5, then do it
+		if (float(wars[i]->chanceOfWinningBattle()) < 0.5 && isDefender)
+		{
+			wars[i]->battle();
+			continue;
+		}
+	}
 }

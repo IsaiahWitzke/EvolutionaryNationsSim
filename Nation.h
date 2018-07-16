@@ -111,8 +111,8 @@ public:
 	//things to do with war
 	vector<War*> wars;	// all the wars that the nation is involved in
 	int army = 1;	// how big/strong the nation's army is
-	float armyStrength = 0;	// how damaged the army is
-	int warScore = 0;	// how well the nation is doing in a war, if negative, then they are loosing, if positive, then they are winning
+	float armyStrength = 1;	// how damaged the army is
+	void repairArmy();	// spend as much resources as possible to return "armyStrength" back to 1
 	//actions that can only be excecuted while at war:
 	void attackEnemyArmy();	// attempts to attack enemy army if army is comprarable or better than enemy's 
 							// (+2 warscore and +0.2 army damadge if successful, -2 warscore and +1 army damadge if unsuccessful)

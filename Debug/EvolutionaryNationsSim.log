@@ -1,10 +1,7 @@
-﻿  Nation.cpp
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(90): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(116): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(127): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(200): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(264): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(330): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(354): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(356): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+﻿  Main.cpp
+c:\users\witzk\documents\github\evolutionarynationssim\main.cpp(50): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\main.cpp(72): warning C4305: 'argument': truncation from 'double' to 'float'
+  TextHandler.cpp
+c:\users\witzk\documents\github\evolutionarynationssim\texthandler.cpp(52): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
   EvolutionaryNationsSim.vcxproj -> C:\Users\witzk\Documents\GitHub\EvolutionaryNationsSim\Debug\EvolutionaryNationsSim.exe

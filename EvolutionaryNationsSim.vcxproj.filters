@@ -51,6 +51,9 @@
     <ClInclude Include="War.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TextHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -81,6 +84,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="War.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

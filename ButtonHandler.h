@@ -17,7 +17,7 @@ public:
 	vector<ButtonTemplate> buttons;
 
 	//just goes through all the button's update functions 
-	void updateButtons();
+	void update();
 
 	ButtonHandler();
 	~ButtonHandler();

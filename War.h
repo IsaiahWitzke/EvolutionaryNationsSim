@@ -19,6 +19,8 @@ public:
 	vector<Nation*> defenders;
 	vector<Nation*> attackers;
 
+	int warScore = 0;	// positive if attackers are winning, negative if defenders are winning
+
 	//to start a war init a War object with an attacker and defender
 	War(Nation * attacker, Nation * defender);
 	~War();

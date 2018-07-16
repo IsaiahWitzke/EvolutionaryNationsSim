@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "War.h"
 #include <sstream>
+#include <windows.h>
 
 extern MapHandler g_map;
 
@@ -89,7 +90,48 @@ float War::chanceOfWinningBattle()
 
 void War::battle()
 {
+	//changing color of console output
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hConsole, 6);
+	cout << endl;
+	cout << "Battle in the war of" << warName << ": ";
+	//do the battle: (if random # between (0 to 100)/100 > chanceOfWinningBattle, then the attackers win)
+	if ((rand() % 100)/100 > chanceOfWinningBattle())
+	{
+		cout << "attackers win" << endl;
+		//warscore increases
+		this->warScore += 2;
 
+		//losses on both side (more on the defending side)
+		for (int i = 0; i < defenders.size(); i++)
+		{
+			defenders[i]->armyStrength *= 0.3;
+		}
+		for (int i = 0; i < attackers.size(); i++)
+		{
+			attackers[i]->armyStrength *= 0.8;
+		}
+	}
+
+	//defenders win
+	if ((rand() % 100) / 100 < chanceOfWinningBattle())
+	{
+		cout << "defenders win" << endl;
+		//warscore decreases
+		this->warScore -= 2;
+
+		//losses on both side (more on the attacking side)
+		for (int i = 0; i < defenders.size(); i++)
+		{
+			defenders[i]->armyStrength *= 0.8;
+		}
+		for (int i = 0; i < attackers.size(); i++)
+		{
+			attackers[i]->armyStrength *= 0.3;
+		}
+	}
+
+	SetConsoleTextAttribute(hConsole, 7);
 }
 
 void War::printInfo()

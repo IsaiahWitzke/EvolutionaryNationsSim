@@ -7,7 +7,7 @@
 #include <vector>
 #include <iostream>
 #include <string>
-
+#include <windows.h>
 
 using namespace sf;
 using namespace std;
@@ -43,6 +43,8 @@ class Nation
 private:
 	void warWithStateOffset(int xOffset, int yOffset);	// to minimize copy/pasting
 	void allyWith(Nation * newAlly);	// handles the allying another nation
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	void Nation::initDiplomacy();
 
 public:
 	
@@ -56,8 +58,8 @@ public:
 	map<Nation *, DiplomaticRelation> diplomaticRelations;	// a map of the nation's diplomatic relationships with others
 
 	//to be able to print info, we need a string output of these pairs
-	string getDiplomaticView(Nation * nation);
-	string getDiplomaticRelation(Nation * nation);
+	void printDiplomaticView(Nation * nation);
+	void printDiplomaticRelation(Nation * nation);
 	
 	Nation(Color color, string name);
 	~Nation();
@@ -87,6 +89,7 @@ public:
 	float stateMaintenance;
 	float taxIncome;
 	float revenue;
+	float armyMaintenance;
 
 	//to find the total development of the nation:
 	int getDevelopment();
@@ -118,6 +121,7 @@ public:
 							// (+2 warscore and +0.2 army damadge if successful, -2 warscore and +1 army damadge if unsuccessful)
 	void occupyEnemyState();	// attempts to occupy a neighboring (+1 warscore, and occupation of state if successful)
 	// to end wars, these are the peace deals that the winner can make:
+	void endWar(War * war);
 	void takeThreeStates();	// will try to take neighboring states with highest development first
 	void takeTwoStates();
 	void takeOneState();

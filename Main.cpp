@@ -16,7 +16,7 @@ using namespace sf;
 float GLOBALSCALE = 5;
 Vector2f GLOBALOFFSET = Vector2f(0, 0);
 
-RenderWindow g_window(VideoMode(512, 512), "Evolutionary Nations");
+RenderWindow g_window(VideoMode(1000, 1000), "Evolutionary Nations");
 
 //the entire collection of states the entire simulation is based off of
 MapHandler g_map;
@@ -60,9 +60,7 @@ int main()
 	g_buttonHandler.buttons.push_back(*new ButtonTemplate("Assets/DevelopmentMapModeButton.bmp", Vector2f(200, 10), callBack, 2));
 	callBack = &defaultMapMode;
 	g_buttonHandler.buttons.push_back(*new ButtonTemplate("Assets/DefaultMapModeButton.bmp", Vector2f(10, 10), callBack, 2));
-	
-	//test text
-	g_textHandler.addText("Testing", Vector2f(100, 100), seconds(3));
+
 
 	//initially draw stuff to screen.
 	g_update();

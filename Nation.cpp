@@ -1,54 +1,8 @@
 #include "stdafx.h"
 #include "Nation.h"
-#include <windows.h>
+
 
 extern MapHandler g_map;
-
-string Nation::getDiplomaticView(Nation * nation)
-{
-	{
-		DiplomaticView nationView = diplomaticViews[nation];
-		switch (nationView)
-		{
-		case close:
-			return "close";
-		case friendly:
-			return "friendly";
-		case warm:
-			return "warm";
-		case neutral:
-			return "neutral";
-		case uneasy:
-			return "unstable";
-		case hostile:
-			return "hostile";
-
-		default:
-			return "Nation::getDiplomaticView needs to be updated. Diplomatic View is not understood";
-		}
-	}
-}
-
-string Nation::getDiplomaticRelation(Nation * nation)
-{
-	DiplomaticRelation nationRelation = diplomaticRelations[nation];
-	switch (nationRelation)
-	{
-	case nothing:
-		return "nothing";
-	case ally:
-		return "ally";
-	case belligerent:
-		return "belligerent";
-	case vasal:
-		return "vasal";
-	case overlord:
-		return "overlord";
-
-	default:
-		return "Nation::getDiplomaticRelation needs to be updated. Diplomatic relation is not understood";
-	}
-}
 
 Nation::Nation(Color color, string name)
 {
@@ -60,15 +14,95 @@ Nation::~Nation()
 {
 }
 
+void Nation::printDiplomaticView(Nation * nation)
+{
+	DiplomaticView nationView = diplomaticViews[nation];
+	switch (nationView)
+	{
+	case close:
+		SetConsoleTextAttribute(hConsole, 10);	// light green
+		cout << "close";
+		break;
+	case friendly:
+		SetConsoleTextAttribute(hConsole, 2);	// dark green
+		cout << "friendly";
+		break;
+	case warm:
+		SetConsoleTextAttribute(hConsole, 3);	// blue-ish
+		cout << "warm";
+		break;
+	case neutral:
+		SetConsoleTextAttribute(hConsole, 9);	// blue
+		cout << "neutral";
+		break;
+	case uneasy:
+		SetConsoleTextAttribute(hConsole, 12);	// dark red
+		cout << "unstable";
+		break;
+	case hostile:
+		SetConsoleTextAttribute(hConsole, 4);	// bright red
+		cout << "hostile";
+		break;
+	default:
+		cout << "Nation::printDiplomaticView needs to be updated. Diplomatic View is not understood";
+		system("pause");
+	}
+
+	SetConsoleTextAttribute(hConsole, 7);
+}
+
+void Nation::printDiplomaticRelation(Nation * nation)
+{
+	
+
+	DiplomaticRelation nationRelation = diplomaticRelations[nation];
+	switch (nationRelation)
+	{
+	case nothing:
+		SetConsoleTextAttribute(hConsole, 9);	// blue
+		cout << "nothing";
+		break;
+	case ally:
+		SetConsoleTextAttribute(hConsole, 10);	// light green
+		cout << "ally";
+		break;
+	case belligerent:
+		SetConsoleTextAttribute(hConsole, 12);	// red
+		cout << "belligerent";
+		break;
+	case vasal:
+		SetConsoleTextAttribute(hConsole, 14);	// yellow
+		cout << "vasal";
+		break;
+	case overlord:
+		SetConsoleTextAttribute(hConsole, 5);	// purple
+		cout << "overlord";
+
+	default:
+		cout << "Nation::printDiplomaticRelation needs to be updated. Diplomatic relation is not understood";
+		system("pause");
+	}
+
+	SetConsoleTextAttribute(hConsole, 7);
+}
+
 void Nation::printInfo()
 {
 	cout << "Name: " << nationName << endl << endl;
 
 	cout << "Size: " << controlledStates.size() << " states" << endl;
 	cout << "Total development: " << getDevelopment() << endl;
-	cout << "wallet: " << resources << endl;
-	cout << "Revenue: " << revenue << endl;
-	cout << "Army strength: " << army << endl;
+	cout << "Wallet: " << resources << endl;
+	cout << "Revenue: "; 
+	//if nation making money, revenue is green, otherwise, it is red:
+	if (revenue > 0)
+		SetConsoleTextAttribute(hConsole, 2);	// green
+	else
+		SetConsoleTextAttribute(hConsole, 12);	// red
+	cout << revenue << endl;
+	SetConsoleTextAttribute(hConsole, 7);	// white
+	cout << "Army size: " << army << endl;
+	cout << "Army strength: " << armyStrength << endl;
 	
 	cout << endl;
 
@@ -78,14 +112,19 @@ void Nation::printInfo()
 		cout << "Dipolmacy: " << endl;
 		for (auto& x : diplomaticViews)
 		{
-			cout << "   feels " << getDiplomaticView(x.first) << " towards " << x.first->nationName << endl;
-			cout << "   sees " << x.first->nationName << " as a " << getDiplomaticRelation(x.first) << endl;
+			cout << "   feels ";
+			printDiplomaticView(x.first); 
+			cout << " towards " << x.first->nationName << endl;
+			cout << "   sees " << x.first->nationName << " as a ";
+			printDiplomaticRelation(x.first);
+			cout << endl;
 		}
 	}
 
 	//displaying who the nation is at war with
 	if (wars.size() != 0)
 	{
+		cout << endl;
 		cout << "Involved in the following wars: " << endl;
 		for (int i = 0; i < wars.size(); i++)
 		{
@@ -322,24 +361,229 @@ void Nation::allyWith(Nation * newAlly)
 	this->increaseRelations(newAlly);
 }
 
+void Nation::increaseRelations(Nation *nation)
+{
+	using IntType = typename std::underlying_type<DiplomaticView>::type;
+	if (this->diplomaticViews[nation] == DiplomaticView::close)	//if we are at the max possible relations, then just leave
+		return;
+	this->diplomaticViews[nation] = static_cast<DiplomaticView>(static_cast<IntType>(this->diplomaticViews[nation]) + 1);
+}
+
+void Nation::decreaseRelations(Nation *nation)
+{
+
+	using IntType = typename std::underlying_type<DiplomaticView>::type;
+	if (this->diplomaticViews[nation] == DiplomaticView::hostile)	//if we are at the min possible relations, then just leave
+		return;
+	this->diplomaticViews[nation] = static_cast<DiplomaticView>(static_cast<IntType>(this->diplomaticViews[nation]) - 1);
+}
+
+void Nation::repairArmy()
+{
+	while (armyStrength < 1 && resources > 0.5)
+	{
+		//takes more money to heal a bigger army:
+		float armyRepairFactor = 1 / float(army);
+		armyStrength += armyRepairFactor;
+		if (armyStrength > 1)
+			armyStrength = 1;
+		resources -= 0.5;
+	}
+}
+
+void Nation::attackEnemyArmy()
+{
+	//look at all wars
+	//if it would be a half decent idea to attack the enemy, then do so
+	for (int i = 0; i < wars.size(); i++)
+	{
+		//first, figure out if we are the defender
+		bool isDefender = false;
+		for (int j = 0; j < wars[i]->defenders.size(); j++)
+		{
+			if (wars[i]->defenders[j] == this)
+				isDefender = true;
+		}
+
+		//if we are the attacker and the "chanceOfAttackerWinningBattle" is > 0.5, then do it
+		if (float(wars[i]->chanceOfAttackerWinningBattle()) > 0.5 && !isDefender)
+		{
+			wars[i]->battle();
+			continue;
+		}
+		//if we are the defender and the "chanceOfAttackerWinningBattle" is < 0.5, then do it
+		if (float(wars[i]->chanceOfAttackerWinningBattle()) < 0.5 && isDefender)
+		{
+			wars[i]->battle();
+			continue;
+		}
+	}
+}
+
+void Nation::endWar(War * war)
+{
+	//getting rid of defender's wars first
+	//iterate through all defenders, then remove them from the war
+	for (int i = 0; i < war->defenders.size(); i++)
+	{
+		war->removeBelligerent(war->defenders[i]);
+	}
+	//then attackers
+	for (int i = 0; i < war->attackers.size(); i++)
+	{
+		war->removeBelligerent(war->attackers[i]);
+	}
+}
+
+void Nation::takeOneState()
+{
+	//go through all wars
+	for (int i = 0; i < wars.size(); i++)
+	{
+		bool isAttacker = true;
+		//first find out if we are the lead defender/attacker
+		if (wars[i]->leadAttacker != this)
+		{
+			isAttacker = false;
+			if (wars[i]->leadDefender != this)
+			{
+				continue;	// only war leaders can make demands
+			}
+		}
+
+		//we need at least 5 warscore to achieve this deal, so if we are the attacker and the warscore is less than 5, move on:
+		if (wars[i]->warScore < 5 && wars[i]->leadAttacker == this)
+		{
+			continue;
+		}
+		//same with defenders, except negative
+		if (wars[i]->warScore > -5 && wars[i]->leadDefender == this)
+		{
+			continue;
+		}
+
+		//for simplicity sake, a nation can only end one war at a time
+		bool aWarEnded = false;
+
+		SetConsoleTextAttribute(hConsole, 5);	// purple
+
+		//for every state neighbooring this one, check to see if the controling nation is the lead beligerent to this nation, if so, take the state:
+		for (int j = 0; j < controlledStates.size(); j++)
+		{
+			//checking states around current one
+			//some relative coordinates
+			int x = controlledStates[j]->positionInMap.x;
+			int y = controlledStates[j]->positionInMap.y;
+
+			//checking to the left
+			x -= 1;
+			if (x > -1 && isAttacker && (g_map.states[x][y].controller == wars[i]->leadDefender))
+			{
+				addContolledState(&g_map.states[x][y]);
+				cout << wars[i]->warName << " has ended" << endl;
+				endWar(wars[i]);
+				aWarEnded = true;
+				break;
+			}
+			if (x > -1 && !isAttacker && (g_map.states[x][y].controller == wars[i]->leadAttacker))
+			{
+				addContolledState(&g_map.states[x][y]);
+				cout << wars[i]->warName << " has ended" << endl;
+				endWar(wars[i]);
+				aWarEnded = true; 
+				break;
+			}
+			//right
+			x += 2;
+			if (x < g_map.width && isAttacker && (g_map.states[x][y].controller == wars[i]->leadDefender))
+			{
+				addContolledState(&g_map.states[x][y]);
+				cout << wars[i]->warName << " has ended" << endl;
+				endWar(wars[i]);
+				aWarEnded = true;
+				break;
+			}
+			if (x < g_map.width && !isAttacker && (g_map.states[x][y].controller == wars[i]->leadAttacker))
+			{
+				addContolledState(&g_map.states[x][y]);
+				cout << wars[i]->warName << " has ended" << endl;
+				endWar(wars[i]);
+				aWarEnded = true;
+				break;
+			}
+			//down
+			x -= 1;
+			y += 1;
+			if (y < g_map.height && isAttacker && (g_map.states[x][y].controller == wars[i]->leadDefender))
+			{
+				addContolledState(&g_map.states[x][y]);
+				cout << wars[i]->warName << " has ended" << endl;
+				endWar(wars[i]);
+				aWarEnded = true;
+				break;
+			}
+			if (y < g_map.height && !isAttacker && (g_map.states[x][y].controller == wars[i]->leadAttacker))
+			{
+				addContolledState(&g_map.states[x][y]);
+				cout << wars[i]->warName << " has ended" << endl;
+				endWar(wars[i]);
+				aWarEnded = true;
+				break;
+			}
+			//up
+			y -= 2;
+			if (y > -1 && isAttacker && (g_map.states[x][y].controller == wars[i]->leadDefender))
+			{
+				addContolledState(&g_map.states[x][y]);
+				cout << wars[i]->warName << " has ended" << endl;
+				endWar(wars[i]);
+				aWarEnded = true;
+				break;
+			}
+			if (y > -1 && !isAttacker && (g_map.states[x][y].controller == wars[i]->leadAttacker))
+			{
+				addContolledState(&g_map.states[x][y]);
+				cout << wars[i]->warName << " has ended" << endl;
+				endWar(wars[i]);
+				aWarEnded = true;
+				break;
+			}
+		}
+
+		SetConsoleTextAttribute(hConsole, 7);	// back to white
+
+		//if a war just ended, the wars vector is going to be all messed up, start over again, then return
+		if (aWarEnded)
+		{
+			takeOneState();
+			return;
+		}
+	}
+}
+
+void Nation::initDiplomacy()
+{
+	for (int i = 0; i < g_map.nations.size(); i++)
+	{
+		//we don't need relationships with ourselves
+		if (g_map.nations[i] == this)
+		{
+			continue;
+		}
+		this->diplomaticViews.emplace(g_map.nations[i], DiplomaticView::neutral);
+		this->diplomaticRelations.emplace(g_map.nations[i], DiplomaticRelation::nothing);
+	}
+	//everybody is going to ally afganastan for testing purposes:
+	if (this != g_map.nations[0])
+		allyWith(g_map.nations[0]);
+}
+
 void Nation::update()
 {
 	//for the first time that the update function is called, we want to initialize the diplomatic views/reationships with other nations
 	if (diplomaticViews.size() == 0)
 	{
-		for (int i = 0; i < g_map.nations.size(); i++)
-		{
-			//we don't need relationships with ourselves
-			if (g_map.nations[i] == this)
-			{
-				continue;
-			}
-			this->diplomaticViews.emplace(g_map.nations[i], DiplomaticView::neutral);
-			this->diplomaticRelations.emplace(g_map.nations[i], DiplomaticRelation::nothing);
-		}
-		//everybody is going to ally afganastan for testing purposes:
-		if (this != g_map.nations[0])
-			allyWith(g_map.nations[0]);
+		initDiplomacy();
 	}
 
 	//IN FUTURE:
@@ -354,9 +598,14 @@ void Nation::update()
 	this->taxIncome = getDevelopment() * 0.05;
 	//state maitenence: (0.3 x number of states)^2
 	this->stateMaintenance = pow((controlledStates.size())*0.3, 1.5);
+	//same with army
+	this->armyMaintenance = pow((army)*0.3, 1.5);
 
-	this->revenue = taxIncome - stateMaintenance;
+	this->revenue = taxIncome - stateMaintenance - armyMaintenance;
 	this->resources += revenue;
+
+	//repair army as much as possible
+	repairArmy();
 
 	//DIPLOMATIC STUFF
 
@@ -366,13 +615,13 @@ void Nation::update()
 	//dont want to be in more than 1 war at a time
 	if (wars.size() != 0)
 	{
-		for (int i = 0; i < wars.size(); i++)
-		{
-
-		}
+		//peace deals
+		takeOneState();
 	}
-
-	declareWarOnEnemyNeighbor();
+	else
+	{
+		declareWarOnEnemyNeighbor();
+	}
 
 	//if at war attack the enemy army
 	if (wars.size() != 0)
@@ -390,61 +639,3 @@ void Nation::update()
 	}
 }
 
-void Nation::increaseRelations(Nation *nation)
-{
-	using IntType = typename std::underlying_type<DiplomaticView>::type;
-	if (this->diplomaticViews[nation] == DiplomaticView::close)	//if we are at the max possible relations, then just leave
-		return;
-	this->diplomaticViews[nation] = static_cast<DiplomaticView>(static_cast<IntType>(this->diplomaticViews[nation]) + 1);
-}
-
-void Nation::decreaseRelations(Nation *nation)
-{
-	
-	using IntType = typename std::underlying_type<DiplomaticView>::type;
-	if (this->diplomaticViews[nation] == DiplomaticView::hostile)	//if we are at the min possible relations, then just leave
-		return;
-	this->diplomaticViews[nation] = static_cast<DiplomaticView>(static_cast<IntType>(this->diplomaticViews[nation]) - 1);
-}
-
-void Nation::repairArmy()
-{
-	while (armyStrength < 1 && resources > 15)
-	{
-		armyStrength += 0.1;
-		if (armyStrength > 1)
-			armyStrength = 1;
-		resources -= 15;
-	
-	}
-}
-
-void Nation::attackEnemyArmy()
-{
-	//look at all wars
-	//if it would be a half decent idea to attack the enemy, then do so
-	for (int i = 0; i < wars.size(); i++)
-	{
-
-		//first, figure out if we are the defender
-		bool isDefender = false;
-		for (int j = 0; j < wars[i]->defenders.size(); j++)
-		{
-			if (wars[i]->defenders[j] == this)
-				isDefender = true;
-		}
-
-		//if we are the attacker and the "chanceOfWinningBattle" is > 0.5, then do it
-		if (float(wars[i]->chanceOfWinningBattle()) > 0.5 && !isDefender)
-		{
-			wars[i]->battle();
-			continue;
-		}
-		//if we are the defender and the "chanceOfWinningBattle" is < 0.5, then do it
-		if (float(wars[i]->chanceOfWinningBattle()) < 0.5 && isDefender)
-		{
-			wars[i]->battle();
-			continue;
-		}
-	}
-}

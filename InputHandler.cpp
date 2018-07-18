@@ -71,14 +71,23 @@ bool InputHandler::getInput(Event * event)
 	{
 		if (event->mouseWheelScroll.wheel == Mouse::VerticalWheel)
 		{
-			if (event->mouseWheelScroll.delta == 1 && GLOBALSCALE < 16)
+			//zoom in
+			if (event->mouseWheelScroll.delta == 1 && GLOBALSCALE < 15)
 			{
 				GLOBALSCALE += SCROLLSPEED;
 				return true;
 			}
+			//zoom out
 			if(event->mouseWheelScroll.delta == -1 && GLOBALSCALE > 0.1)
 			{
 				GLOBALSCALE -= SCROLLSPEED;
+
+				//avoid bad things
+				if (GLOBALSCALE < 0.1)
+				{
+					GLOBALSCALE = 0.1;
+				}
+
 				return true;
 			}		
 		}

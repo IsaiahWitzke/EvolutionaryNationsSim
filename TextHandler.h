@@ -1,5 +1,6 @@
 #pragma once
 #include <sfml/Graphics.hpp>
+#include "Nation.h"
 
 using namespace sf;
 using namespace std;
@@ -9,14 +10,15 @@ extern RenderWindow g_window;
 class TextHandler
 {
 public:
+	//static text
+	vector<Text> staticText;
 
-	Clock clock;
-	map<Time, Text> allText;
+	//text that updates position every frame:
+	vector<Text> dynamicText;
 
 	Font font;
-	Text tempText;
 
-	void addText(string words, Vector2f position, Time lifetime);
+	void addText(string words, Vector2f position);
 	void update();
 
 	TextHandler();

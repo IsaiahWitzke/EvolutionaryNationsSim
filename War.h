@@ -28,8 +28,10 @@ public:
 	void addDefender(Nation * newDefender);
 	void addAttacker(Nation * newAttacker);
 
+	void removeBelligerent(Nation * formerBelligerent);
+
 	//returns the chance of the attacker winning a battle (1 being 100% in favour of attackers, being 100% in favour of defenders):
-	float chanceOfWinningBattle();
+	float chanceOfAttackerWinningBattle();
 	void battle();
 
 	void printInfo();

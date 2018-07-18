@@ -3,9 +3,53 @@
 #include "MapHandler.h"
 #include <iostream>
 
+extern float GLOBALSCALE;
 extern MapHandler g_map;
 
-void TextHandler::addText(string words, Vector2f position, Time lifetime)
+void TextHandler::addText(string words, Vector2f position)
+{
+	// Create a text
+	sf::Text text(words, this->font);
+	text.setCharacterSize(7);
+	text.setStyle(sf::Text::Regular);
+	text.setFillColor(sf::Color::White);
+	text.setPosition(position);
+
+	//add it to the vector
+	this->staticText.push_back(text);
+}
+
+void TextHandler::update()
+{
+	//to display nation names
+	dynamicText.clear();
+	
+	for (int i = 0; i < g_map.nations.size(); i++)
+	{
+		sf::Text nationNameText(g_map.nations[i]->nationName, this->font);
+		nationNameText.setCharacterSize(10 * GLOBALSCALE);
+		nationNameText.setStyle(sf::Text::Regular);
+		nationNameText.setFillColor(sf::Color::White);
+		nationNameText.setOutlineColor(sf::Color::Black);
+		nationNameText.setOutlineThickness(GLOBALSCALE);
+		nationNameText.setPosition(g_map.nations[i]->controlledStates[0]->sprite.getPosition());
+		this->dynamicText.push_back(nationNameText);
+	}
+
+	for (int i = 0; i < staticText.size(); i++)
+	{
+		//draw the permanate text
+		g_window.draw(staticText[i]);
+	}
+
+	for (int i = 0; i < dynamicText.size(); i++)
+	{
+		//draw the dynamic text
+		g_window.draw(dynamicText[i]);
+	}
+}
+
+TextHandler::TextHandler()
 {
 	// Declare and load a font
 	sf::Font font;
@@ -16,50 +60,6 @@ void TextHandler::addText(string words, Vector2f position, Time lifetime)
 	}
 
 	this->font = font;
-
-	// Create a text
-	sf::Text text(words, this->font);
-	text.setCharacterSize(15);
-	text.setStyle(sf::Text::Regular);
-	text.setFillColor(sf::Color::White);
-	text.setPosition(position);
-
-	//add it to the map of texts
-	this->allText.emplace(clock.getElapsedTime() + lifetime, text);
-	this->tempText = text;
-}
-
-void TextHandler::update()
-{
-	//a vector of text that will be filled with text that needs to die/be erased from the "allText" map
-	vector<Text> textToDie;
-
-	for (const auto& sm_pair : allText)
-	{
-		//first check if it is time for the buttons to die:
-		
-		if (sm_pair.first.asSeconds() >= (clock.getElapsedTime()).asSeconds())
-		{
-			textToDie.push_back(sm_pair.second);
-		}
-		
-		//draw the text
-		g_window.draw(sm_pair.second);
-	}
-
-	
-	//erasing all the text that is too old
-	for (int i = 0; i < textToDie.size(); i++)
-	{
-		
-		//allText.erase(textToDie[i]);
-	}
-	
-}
-
-TextHandler::TextHandler()
-{
-
 }
 
 

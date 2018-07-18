@@ -1,7 +1,1 @@
-﻿  Main.cpp
-c:\users\witzk\documents\github\evolutionarynationssim\main.cpp(50): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\main.cpp(72): warning C4305: 'argument': truncation from 'double' to 'float'
-  TextHandler.cpp
-c:\users\witzk\documents\github\evolutionarynationssim\texthandler.cpp(52): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
-  EvolutionaryNationsSim.vcxproj -> C:\Users\witzk\Documents\GitHub\EvolutionaryNationsSim\Debug\EvolutionaryNationsSim.exe
+﻿  EvolutionaryNationsSim.vcxproj -> C:\Users\witzk\Documents\GitHub\EvolutionaryNationsSim\Debug\EvolutionaryNationsSim.exe

@@ -12,6 +12,9 @@ War::War(Nation * attacker, Nation * defender)
 	tempWarName << "The " << attacker->nationName << "-" << defender->nationName << " war of agression";
 	this->warName = tempWarName.str();
 
+	this->leadAttacker = attacker;
+	this->leadDefender = defender;
+
 	addAttacker(attacker);
 	addDefender(defender);
 
@@ -68,7 +71,47 @@ void War::addAttacker(Nation * newAttacker)
 	}
 }
 
-float War::chanceOfWinningBattle()
+void War::removeBelligerent(Nation * formerBelligerent)
+{
+	//get rid of war from wars vector
+	for (int i = 0; i < formerBelligerent->wars.size(); i++)
+	{
+		if (formerBelligerent->wars[i] == this)
+		{
+			formerBelligerent->wars.erase(formerBelligerent->wars.begin() + i);
+			break;
+		}
+	}
+	
+	//make everyone else not a belligerent
+	//also, make everyone else think of formerBelligerent as not a belligerent
+	for (int i = 0; i < defenders.size(); i++)
+	{
+		if (defenders[i] == formerBelligerent)
+			continue;
+		
+		if (formerBelligerent->diplomaticRelations[defenders[i]] != DiplomaticRelation::ally)
+		{
+			formerBelligerent->diplomaticRelations[defenders[i]] = DiplomaticRelation::nothing;
+			defenders[i]->diplomaticRelations[formerBelligerent] = DiplomaticRelation::nothing;
+		}
+		
+	}
+	for (int i = 0; i < attackers.size(); i++)
+	{
+		if (attackers[i] == formerBelligerent)
+			continue;
+
+		if (formerBelligerent->diplomaticRelations[attackers[i]] != DiplomaticRelation::ally)
+		{
+			formerBelligerent->diplomaticRelations[attackers[i]] = DiplomaticRelation::nothing;
+			attackers[i]->diplomaticRelations[formerBelligerent] = DiplomaticRelation::nothing;
+		}
+	}
+}
+
+
+float War::chanceOfAttackerWinningBattle()
 {
 	float attackerStrength = 0;
 	float defenderStrength = 0;
@@ -90,15 +133,20 @@ float War::chanceOfWinningBattle()
 
 void War::battle()
 {
+
 	//changing color of console output
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, 6);
+	SetConsoleTextAttribute(hConsole, 7);
 	cout << endl;
-	cout << "Battle in the war of" << warName << ": ";
+	cout << warName << " battle: " << endl;
+
+	float outcome = float(rand() % 100) / 100;
+
 	//do the battle: (if random # between (0 to 100)/100 > chanceOfWinningBattle, then the attackers win)
-	if ((rand() % 100)/100 > chanceOfWinningBattle())
+	if (outcome <= chanceOfAttackerWinningBattle())
 	{
-		cout << "attackers win" << endl;
+		SetConsoleTextAttribute(hConsole, 6);	// puke yellow
+		cout << "attackers win (" << leadAttacker->nationName << ")" << endl;
 		//warscore increases
 		this->warScore += 2;
 
@@ -114,9 +162,10 @@ void War::battle()
 	}
 
 	//defenders win
-	if ((rand() % 100) / 100 < chanceOfWinningBattle())
+	if (outcome > chanceOfAttackerWinningBattle())
 	{
-		cout << "defenders win" << endl;
+		SetConsoleTextAttribute(hConsole, 3);	// blue
+		cout << "defenders win (" << leadDefender->nationName << ")" << endl;
 		//warscore decreases
 		this->warScore -= 2;
 
@@ -147,4 +196,18 @@ void War::printInfo()
 	{
 		cout << "   " << defenders[i]->nationName << endl;
 	}
+
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	if (warScore >= 0)
+	{
+		SetConsoleTextAttribute(hConsole, 6);	// puke yellow
+		cout << "  " << "attackers winning by " << warScore << " points" << endl;
+	}
+	else
+	{
+		SetConsoleTextAttribute(hConsole, 3);	// blue
+		cout << "  " << "defenders winning by " << -1 * warScore << " points" << endl;
+	}
+	SetConsoleTextAttribute(hConsole, 7);	// white
 }

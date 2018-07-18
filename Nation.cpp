@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Nation.h"
-
+#include <stdlib.h>
 
 extern MapHandler g_map;
 
@@ -140,6 +140,18 @@ void Nation::addContolledState(State * state)
 	if (state->isWater)
 	{
 		return;
+	}
+
+	//if it has a controller, get the controlled to give up the state
+	if (state->controller != NULL)
+	{
+		for (int i = 0; i < state->controller->controlledStates.size(); i++)
+		{
+			if (state->controller->controlledStates[i] == state)
+			{
+				state->controller->controlledStates.erase(state->controller->controlledStates.begin() + i);
+			}
+		}
 	}
 
 	//otherwise we want to set up the two-way link between the nation and the state
@@ -420,22 +432,7 @@ void Nation::attackEnemyArmy()
 	}
 }
 
-void Nation::endWar(War * war)
-{
-	//getting rid of defender's wars first
-	//iterate through all defenders, then remove them from the war
-	for (int i = 0; i < war->defenders.size(); i++)
-	{
-		war->removeBelligerent(war->defenders[i]);
-	}
-	//then attackers
-	for (int i = 0; i < war->attackers.size(); i++)
-	{
-		war->removeBelligerent(war->attackers[i]);
-	}
-}
-
-void Nation::takeOneState()
+void Nation::takeStates()
 {
 	//go through all wars
 	for (int i = 0; i < wars.size(); i++)
@@ -462,102 +459,110 @@ void Nation::takeOneState()
 			continue;
 		}
 
-		//for simplicity sake, a nation can only end one war at a time
-		bool aWarEnded = false;
+		//figure out if it is time to end the war. If we can continue to obliterate the enemy then continue, otherwise, stop the war
+		float alliesStrength = 0;
+		float enemyStrength = 0;
+		for (auto& diplomaticRelationPair : diplomaticRelations)
+		{
+			if (diplomaticRelationPair.second = DiplomaticRelation::ally)
+			{
+				alliesStrength += diplomaticRelationPair.first->army*diplomaticRelationPair.first->armyStrength;
+			}
+			if (diplomaticRelationPair.second = DiplomaticRelation::belligerent)
+			{
+				enemyStrength += diplomaticRelationPair.first->army*diplomaticRelationPair.first->armyStrength;
+			}
+		}
+
+		//if our side is better than theirs AND we havent already obliterated them, then keep on going with the current war
+		if (alliesStrength > enemyStrength && wars[i]->warScore < 100)
+		{
+			continue;
+		}
+		
+		//for simplicity, the warscore will just be possitve, and every time a state is taken, 5 will be deducted
+		wars[i]->warScore = abs(wars[i]->warScore);
+
+		//we are trying to take as many states as possible
+		while (wars[i]->warScore >= 5)
+		{
+			//for every state neighbooring this one, check to see if the controling nation is the lead beligerent to this nation, if so, take the state:
+			for (int j = 0; j < controlledStates.size(); j++)
+			{
+				//checking states around current one
+				//some relative coordinates
+				int x = controlledStates[j]->positionInMap.x;
+				int y = controlledStates[j]->positionInMap.y;
+
+				//checking to the left
+				x -= 1;
+				if (x > -1 && isAttacker && (g_map.states[x][y].controller == wars[i]->leadDefender))
+				{
+					addContolledState(&g_map.states[x][y]);
+					wars[i]->warScore -= 5;
+					continue;
+				}
+				if (x > -1 && !isAttacker && (g_map.states[x][y].controller == wars[i]->leadAttacker))
+				{
+					addContolledState(&g_map.states[x][y]);
+					wars[i]->warScore -= 5;
+					continue;
+				}
+				//right
+				x += 2;
+				if (x < g_map.width && isAttacker && (g_map.states[x][y].controller == wars[i]->leadDefender))
+				{
+					addContolledState(&g_map.states[x][y]);
+					wars[i]->warScore -= 5;
+					continue;
+				}
+				if (x < g_map.width && !isAttacker && (g_map.states[x][y].controller == wars[i]->leadAttacker))
+				{
+					addContolledState(&g_map.states[x][y]);
+					wars[i]->warScore -= 5;
+					continue;
+				}
+				//down
+				x -= 1;
+				y += 1;
+				if (y < g_map.height && isAttacker && (g_map.states[x][y].controller == wars[i]->leadDefender))
+				{
+					addContolledState(&g_map.states[x][y]);
+					wars[i]->warScore -= 5;
+					continue;
+				}
+				if (y < g_map.height && !isAttacker && (g_map.states[x][y].controller == wars[i]->leadAttacker))
+				{
+					addContolledState(&g_map.states[x][y]);
+					wars[i]->warScore -= 5;
+					continue;
+				}
+				//up
+				y -= 2;
+				if (y > -1 && isAttacker && (g_map.states[x][y].controller == wars[i]->leadDefender))
+				{
+					addContolledState(&g_map.states[x][y]);
+					wars[i]->warScore -= 5;
+					continue;
+				}
+				if (y > -1 && !isAttacker && (g_map.states[x][y].controller == wars[i]->leadAttacker))
+				{
+					addContolledState(&g_map.states[x][y]);
+					wars[i]->warScore -= 5;
+					continue;
+				}
+			}
+
+			//if we got here without anything happening, then get out, no possible states left to take:
+			break;
+		}
 
 		SetConsoleTextAttribute(hConsole, 5);	// purple
-
-		//for every state neighbooring this one, check to see if the controling nation is the lead beligerent to this nation, if so, take the state:
-		for (int j = 0; j < controlledStates.size(); j++)
-		{
-			//checking states around current one
-			//some relative coordinates
-			int x = controlledStates[j]->positionInMap.x;
-			int y = controlledStates[j]->positionInMap.y;
-
-			//checking to the left
-			x -= 1;
-			if (x > -1 && isAttacker && (g_map.states[x][y].controller == wars[i]->leadDefender))
-			{
-				addContolledState(&g_map.states[x][y]);
-				cout << wars[i]->warName << " has ended" << endl;
-				endWar(wars[i]);
-				aWarEnded = true;
-				break;
-			}
-			if (x > -1 && !isAttacker && (g_map.states[x][y].controller == wars[i]->leadAttacker))
-			{
-				addContolledState(&g_map.states[x][y]);
-				cout << wars[i]->warName << " has ended" << endl;
-				endWar(wars[i]);
-				aWarEnded = true; 
-				break;
-			}
-			//right
-			x += 2;
-			if (x < g_map.width && isAttacker && (g_map.states[x][y].controller == wars[i]->leadDefender))
-			{
-				addContolledState(&g_map.states[x][y]);
-				cout << wars[i]->warName << " has ended" << endl;
-				endWar(wars[i]);
-				aWarEnded = true;
-				break;
-			}
-			if (x < g_map.width && !isAttacker && (g_map.states[x][y].controller == wars[i]->leadAttacker))
-			{
-				addContolledState(&g_map.states[x][y]);
-				cout << wars[i]->warName << " has ended" << endl;
-				endWar(wars[i]);
-				aWarEnded = true;
-				break;
-			}
-			//down
-			x -= 1;
-			y += 1;
-			if (y < g_map.height && isAttacker && (g_map.states[x][y].controller == wars[i]->leadDefender))
-			{
-				addContolledState(&g_map.states[x][y]);
-				cout << wars[i]->warName << " has ended" << endl;
-				endWar(wars[i]);
-				aWarEnded = true;
-				break;
-			}
-			if (y < g_map.height && !isAttacker && (g_map.states[x][y].controller == wars[i]->leadAttacker))
-			{
-				addContolledState(&g_map.states[x][y]);
-				cout << wars[i]->warName << " has ended" << endl;
-				endWar(wars[i]);
-				aWarEnded = true;
-				break;
-			}
-			//up
-			y -= 2;
-			if (y > -1 && isAttacker && (g_map.states[x][y].controller == wars[i]->leadDefender))
-			{
-				addContolledState(&g_map.states[x][y]);
-				cout << wars[i]->warName << " has ended" << endl;
-				endWar(wars[i]);
-				aWarEnded = true;
-				break;
-			}
-			if (y > -1 && !isAttacker && (g_map.states[x][y].controller == wars[i]->leadAttacker))
-			{
-				addContolledState(&g_map.states[x][y]);
-				cout << wars[i]->warName << " has ended" << endl;
-				endWar(wars[i]);
-				aWarEnded = true;
-				break;
-			}
-		}
-
+		cout << wars[i]->warName << " has ended" << endl;
+		wars[i]->endWar();
+		takeStates(); // recursion so that all possible wars can be ended
 		SetConsoleTextAttribute(hConsole, 7);	// back to white
-
-		//if a war just ended, the wars vector is going to be all messed up, start over again, then return
-		if (aWarEnded)
-		{
-			takeOneState();
-			return;
-		}
+		return;	// once all possible wars have ended, return
 	}
 }
 
@@ -578,8 +583,68 @@ void Nation::initDiplomacy()
 		allyWith(g_map.nations[0]);
 }
 
+void Nation::removeSelf()
+{
+
+	//go through all nations and wars and get rid of references to self
+	for (int i = 0; i < g_map.nations.size(); i++)
+	{
+		//we don't need relationships with ourselves
+		if (g_map.nations[i] == this)
+		{
+			continue;
+		}
+
+		g_map.nations[i]->diplomaticViews.erase(this);
+		g_map.nations[i]->diplomaticRelations.erase(this);
+	}
+
+	//go through all the wars and get rid of this
+	for (int i = 0; i < wars.size(); i++)
+	{
+		for (int j = 0; j < wars[i]->defenders.size(); j++)
+		{
+			//if we have came across ourselves, get rid of it
+			if (wars[i]->defenders[j] == this)
+			{
+				wars[i]->defenders.erase(wars[i]->defenders.begin() + j);
+				//now if all defenders are gone, end the war
+				if (wars[i]->defenders.size() == 0)
+					wars[i]->endWar();
+			}
+			
+		}
+		//same for attackers
+		for (int j = 0; j < wars[i]->attackers.size(); j++)
+		{
+			if (wars[i]->attackers[j] == this)
+			{
+				wars[i]->attackers.erase(wars[i]->attackers.begin() + j);
+				if (wars[i]->attackers.size() == 0)
+					wars[i]->endWar();
+			}
+		}
+	}
+
+	//finally, get rid of self in the g_map so it will never be updated again
+	for (int i = 0; i < g_map.nations.size(); i++)
+	{
+		//we don't need relationships with ourselves
+		if (g_map.nations[i] == this)
+		{
+			g_map.nations.erase(g_map.nations.begin() + i);
+		}
+	}
+}
+
 void Nation::update()
 {
+	//if the nation has 0 states, it needs to be removed:
+	if (controlledStates.size() == 0)
+	{
+		removeSelf();
+	}
+
 	//for the first time that the update function is called, we want to initialize the diplomatic views/reationships with other nations
 	if (diplomaticViews.size() == 0)
 	{
@@ -616,7 +681,7 @@ void Nation::update()
 	if (wars.size() != 0)
 	{
 		//peace deals
-		takeOneState();
+		takeStates();
 	}
 	else
 	{
@@ -629,6 +694,10 @@ void Nation::update()
 		attackEnemyArmy();
 	}
 
+	//repair army as much as possible (again)
+	repairArmy();
+
+	//colonization
 	while (true)
 	{
 		int statesBeforeColonizing = controlledStates.size();

@@ -71,6 +71,21 @@ void War::addAttacker(Nation * newAttacker)
 	}
 }
 
+void War::endWar()
+{
+	//getting rid of defender's wars first
+	//iterate through all defenders, then remove them from the war
+	for (int i = 0; i < this->defenders.size(); i++)
+	{
+		this->removeBelligerent(this->defenders[i]);
+	}
+	//then attackers
+	for (int i = 0; i < this->attackers.size(); i++)
+	{
+		this->removeBelligerent(this->attackers[i]);
+	}
+}
+
 void War::removeBelligerent(Nation * formerBelligerent)
 {
 	//get rid of war from wars vector

@@ -44,8 +44,8 @@ private:
 	void warWithStateOffset(int xOffset, int yOffset);	// to minimize copy/pasting
 	void allyWith(Nation * newAlly);	// handles the allying another nation
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	void Nation::initDiplomacy();
-
+	void initDiplomacy();
+	void removeSelf();	//gets rid of self. called when the nation dies
 public:
 	
 	vector<State *> controlledStates;
@@ -121,10 +121,7 @@ public:
 							// (+2 warscore and +0.2 army damadge if successful, -2 warscore and +1 army damadge if unsuccessful)
 	void occupyEnemyState();	// attempts to occupy a neighboring (+1 warscore, and occupation of state if successful)
 	// to end wars, these are the peace deals that the winner can make:
-	void endWar(War * war);
-	void takeThreeStates();	// will try to take neighboring states with highest development first
-	void takeTwoStates();
-	void takeOneState();
+	void takeStates();	// attempt to take the most states possible
 	void takeResources();
 	void vassalize();
 	void whitePeace();

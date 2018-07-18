@@ -1,1 +1,6 @@
-﻿  EvolutionaryNationsSim.vcxproj -> C:\Users\witzk\Documents\GitHub\EvolutionaryNationsSim\Debug\EvolutionaryNationsSim.exe
+﻿  TextHandler.cpp
+c:\users\witzk\documents\github\evolutionarynationssim\texthandler.cpp(27): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\texthandler.cpp(36): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+c:\users\witzk\documents\github\evolutionarynationssim\texthandler.cpp(45): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\texthandler.cpp(51): warning C4018: '<': signed/unsigned mismatch
+  EvolutionaryNationsSim.vcxproj -> C:\Users\witzk\Documents\GitHub\EvolutionaryNationsSim\Debug\EvolutionaryNationsSim.exe

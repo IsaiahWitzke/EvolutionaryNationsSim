@@ -26,6 +26,12 @@ void TextHandler::update()
 	
 	for (int i = 0; i < g_map.nations.size(); i++)
 	{
+		//for nations that dont have any states, but havent been removed quite yet
+		if (g_map.nations[i]->controlledStates.size() == 0)
+		{
+			continue;
+		}
+		
 		sf::Text nationNameText(g_map.nations[i]->nationName, this->font);
 		nationNameText.setCharacterSize(10 * GLOBALSCALE);
 		nationNameText.setStyle(sf::Text::Regular);

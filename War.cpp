@@ -22,6 +22,8 @@ War::War(Nation * attacker, Nation * defender)
 	//go through all nations in the world, if they are an ally, call them into the war
 	for (int i = 0; i < g_map.nations.size(); i++)
 	{
+		if (g_map.nations[i] == defender)
+			continue;
 		if (defender->diplomaticRelations[g_map.nations[i]] == DiplomaticRelation::ally)
 		{
 			addDefender(g_map.nations[i]);
@@ -31,6 +33,8 @@ War::War(Nation * attacker, Nation * defender)
 	//then attackers
 	for (int i = 0; i < g_map.nations.size(); i++)
 	{
+		if (g_map.nations[i] == attacker)
+			continue;
 		if (attacker->diplomaticRelations[g_map.nations[i]] == DiplomaticRelation::ally)
 		{
 			addAttacker(g_map.nations[i]);
@@ -43,7 +47,6 @@ War::~War()
 {
 }
 
-
 void War::addDefender(Nation * newDefender)
 {
 	this->defenders.push_back(newDefender);
@@ -55,7 +58,9 @@ void War::addDefender(Nation * newDefender)
 		newDefender->decreaseRelations(attackers[i]);
 		attackers[i]->diplomaticRelations[newDefender] = DiplomaticRelation::belligerent;
 		attackers[i]->decreaseRelations(newDefender);
-	}	
+	}
+
+	return;
 }
 
 void War::addAttacker(Nation * newAttacker)
@@ -73,6 +78,7 @@ void War::addAttacker(Nation * newAttacker)
 
 void War::endWar()
 {
+
 	//getting rid of defender's wars first
 	//iterate through all defenders, then remove them from the war
 	for (int i = 0; i < this->defenders.size(); i++)
@@ -84,6 +90,7 @@ void War::endWar()
 	{
 		this->removeBelligerent(this->attackers[i]);
 	}
+
 }
 
 void War::removeBelligerent(Nation * formerBelligerent)
@@ -97,34 +104,7 @@ void War::removeBelligerent(Nation * formerBelligerent)
 			break;
 		}
 	}
-	
-	//make everyone else not a belligerent
-	//also, make everyone else think of formerBelligerent as not a belligerent
-	for (int i = 0; i < defenders.size(); i++)
-	{
-		if (defenders[i] == formerBelligerent)
-			continue;
-		
-		if (formerBelligerent->diplomaticRelations[defenders[i]] != DiplomaticRelation::ally)
-		{
-			formerBelligerent->diplomaticRelations[defenders[i]] = DiplomaticRelation::nothing;
-			defenders[i]->diplomaticRelations[formerBelligerent] = DiplomaticRelation::nothing;
-		}
-		
-	}
-	for (int i = 0; i < attackers.size(); i++)
-	{
-		if (attackers[i] == formerBelligerent)
-			continue;
-
-		if (formerBelligerent->diplomaticRelations[attackers[i]] != DiplomaticRelation::ally)
-		{
-			formerBelligerent->diplomaticRelations[attackers[i]] = DiplomaticRelation::nothing;
-			attackers[i]->diplomaticRelations[formerBelligerent] = DiplomaticRelation::nothing;
-		}
-	}
 }
-
 
 float War::chanceOfAttackerWinningBattle()
 {
@@ -198,7 +178,7 @@ void War::battle()
 	SetConsoleTextAttribute(hConsole, 7);
 }
 
-void War::printInfo()
+void War::printInfo(Nation * nation)
 {
 	cout << warName << endl;
 	cout << "  Attackers:" << endl;
@@ -213,16 +193,44 @@ void War::printInfo()
 	}
 
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
-	if (warScore >= 0)
+	
+	//see if the nation of interest is part of the winning side
+	bool isDefender = false;
+	for (int i = 0; i < defenders.size(); i++)
 	{
-		SetConsoleTextAttribute(hConsole, 6);	// puke yellow
-		cout << "  " << "attackers winning by " << warScore << " points" << endl;
+		if (this->defenders[i] == nation)
+		{
+			isDefender = true;
+		}
+	}
+
+	//want to output whether or not the nation of interest is winning:
+	if (isDefender)
+	{
+		if (warScore >= 0)
+		{
+			SetConsoleTextAttribute(hConsole, 4);	// red
+			cout << "  " << "loosing by " << warScore << " points" << endl;
+		}
+		else
+		{
+			SetConsoleTextAttribute(hConsole, 2);	// green
+			cout << "  " << "winning by " << -1 * warScore << " points" << endl;
+		}
 	}
 	else
 	{
-		SetConsoleTextAttribute(hConsole, 3);	// blue
-		cout << "  " << "defenders winning by " << -1 * warScore << " points" << endl;
+		if (warScore >= 0)
+		{
+			SetConsoleTextAttribute(hConsole, 2);	// green
+			cout << "  " << "winning by " << warScore << " points" << endl;
+		}
+		else
+		{
+			SetConsoleTextAttribute(hConsole, 4);	// red
+			cout << "  " << "loosing by " << -1 * warScore << " points" << endl;
+		}
 	}
+	
 	SetConsoleTextAttribute(hConsole, 7);	// white
 }

@@ -33,7 +33,7 @@ enum DiplomaticRelation
 	nothing,
 	ally,
 	belligerent,
-	vasal,
+	vassal,
 	overlord,
 };
 
@@ -46,6 +46,8 @@ private:
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	void initDiplomacy();
 	void removeSelf();	//gets rid of self. called when the nation dies
+	void updateRelationships();	// goes through all the diplomatic relationships and makes sure that any belligarants are actually in the opposing side in wars
+
 public:
 	
 	vector<State *> controlledStates;

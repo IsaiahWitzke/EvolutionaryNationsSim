@@ -36,6 +36,6 @@ public:
 	float chanceOfAttackerWinningBattle();
 	void battle();
 
-	void printInfo();
+	void printInfo(Nation * nation);
 };
 

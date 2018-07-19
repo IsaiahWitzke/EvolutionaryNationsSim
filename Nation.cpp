@@ -70,7 +70,7 @@ void Nation::printDiplomaticRelation(Nation * nation)
 		SetConsoleTextAttribute(hConsole, 12);	// red
 		cout << "belligerent";
 		break;
-	case vasal:
+	case vassal:
 		SetConsoleTextAttribute(hConsole, 14);	// yellow
 		cout << "vasal";
 		break;
@@ -128,7 +128,7 @@ void Nation::printInfo()
 		cout << "Involved in the following wars: " << endl;
 		for (int i = 0; i < wars.size(); i++)
 		{
-			wars[i]->printInfo();
+			wars[i]->printInfo(this);
 		}
 	}
 
@@ -437,8 +437,8 @@ void Nation::takeStates()
 	//go through all wars
 	for (int i = 0; i < wars.size(); i++)
 	{
-		bool isAttacker = true;
 		//first find out if we are the lead defender/attacker
+		bool isAttacker = true;
 		if (wars[i]->leadAttacker != this)
 		{
 			isAttacker = false;
@@ -464,11 +464,11 @@ void Nation::takeStates()
 		float enemyStrength = 0;
 		for (auto& diplomaticRelationPair : diplomaticRelations)
 		{
-			if (diplomaticRelationPair.second = DiplomaticRelation::ally)
+			if (diplomaticRelationPair.second == DiplomaticRelation::ally)
 			{
 				alliesStrength += diplomaticRelationPair.first->army*diplomaticRelationPair.first->armyStrength;
 			}
-			if (diplomaticRelationPair.second = DiplomaticRelation::belligerent)
+			if (diplomaticRelationPair.second == DiplomaticRelation::belligerent)
 			{
 				enemyStrength += diplomaticRelationPair.first->army*diplomaticRelationPair.first->armyStrength;
 			}
@@ -637,6 +637,45 @@ void Nation::removeSelf()
 	}
 }
 
+void Nation::updateRelationships()
+{
+	//itterate through the nation's diplo relations, if the relation is not ally, overlord, or vasal, assume nothing
+	for (auto &i : diplomaticRelations)
+	{
+		if (i.second == ally || i.second == vassal || i.second == overlord)
+			continue;
+		i.second = nothing;
+	}
+
+	//makes sure that any belligarants are actually in the opposing side in wars
+	for (int warIndex = 0; warIndex < wars.size(); warIndex++)
+	{
+		//is this the defender?
+		bool isDefender = false;
+		for (int i = 0; i < wars[warIndex]->defenders.size(); i++)
+		{
+			if (wars[warIndex]->defenders[i] == this)
+			{
+				isDefender = true;
+			}
+		}
+
+		//all of those who should be this nation's belligerents
+		vector<Nation*> belligerents;
+		if (isDefender)
+			belligerents = wars[warIndex]->attackers;
+		else
+			belligerents = wars[warIndex]->defenders;
+	
+		for (int i = 0; i < belligerents.size(); i++)
+		{
+			belligerents[i]->diplomaticRelations[this] = DiplomaticRelation::belligerent;
+			this->diplomaticRelations[belligerents[i]] = DiplomaticRelation::belligerent;
+		}
+	}
+}
+
+
 void Nation::update()
 {
 	//if the nation has 0 states, it needs to be removed:
@@ -650,6 +689,8 @@ void Nation::update()
 	{
 		initDiplomacy();
 	}
+
+	updateRelationships();
 
 	//IN FUTURE:
 	//there will be an array of functions/actions that the nation can do 
@@ -707,4 +748,3 @@ void Nation::update()
 			break;
 	}
 }
-

@@ -128,7 +128,6 @@ float War::chanceOfAttackerWinningBattle()
 
 void War::battle()
 {
-
 	//changing color of console output
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, 7);
@@ -149,10 +148,12 @@ void War::battle()
 		for (int i = 0; i < defenders.size(); i++)
 		{
 			defenders[i]->armyStrength *= 0.3;
+			defenders[i]->warExhaustion += 1;
 		}
 		for (int i = 0; i < attackers.size(); i++)
 		{
 			attackers[i]->armyStrength *= 0.8;
+			attackers[i]->warExhaustion += 4;
 		}
 	}
 

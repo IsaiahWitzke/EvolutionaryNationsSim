@@ -41,7 +41,7 @@ enum DiplomaticRelation
 class Nation
 {
 private:
-	void warWithStateOffset(int xOffset, int yOffset);	// to minimize copy/pasting
+	bool warWithStateOffset(int xOffset, int yOffset);	// to minimize copy/pasting
 	void allyWith(Nation * newAlly);	// handles the allying another nation
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	void initDiplomacy();
@@ -50,14 +50,24 @@ private:
 
 public:
 	
+	string nationName;
+
+	//these are the nation stats that determine how willing the nation is to do different actions
+	int diplomat;
+	int militant;
+	int economist;
+
 	vector<State *> controlledStates;
 
 	Color nationColor;
-	string nationName;
+	
 
 	int stability = 5;	// how stable the nation is. If ever negative, the nation breaks
 	map<Nation *, DiplomaticView> diplomaticViews;			// a map of the nation's diplomatic views with others
 	map<Nation *, DiplomaticRelation> diplomaticRelations;	// a map of the nation's diplomatic relationships with others
+
+	// if this ever exceeds 100, stabillity drops, but war warExhuastion drops back to 0
+	int warExhaustion = 0;
 
 	//to be able to print info, we need a string output of these pairs
 	void printDiplomaticView(Nation * nation);

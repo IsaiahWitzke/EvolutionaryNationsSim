@@ -8,6 +8,11 @@ Nation::Nation(Color color, string name)
 {
 	this->nationColor = color;
 	this->nationName = name;
+
+	//initializing the nation's stats
+	this->diplomat = rand() % 10;
+	this->militant = rand() % 10;
+	this->economist = rand() % 10;
 }
 
 Nation::~Nation()
@@ -89,6 +94,14 @@ void Nation::printDiplomaticRelation(Nation * nation)
 void Nation::printInfo()
 {
 	cout << "Name: " << nationName << endl << endl;
+
+	cout << "Nation's stats: " << endl;
+	cout << "  diplomat: " << diplomat << endl;
+	cout << "  militant: " << militant << endl;
+	cout << "  economist: " << economist << endl << endl;
+
+	cout << "Stability: " << stability << endl;
+	cout << "War Exhaustion: " << warExhaustion << endl;
 
 	cout << "Size: " << controlledStates.size() << " states" << endl;
 	cout << "Total development: " << getDevelopment() << endl;
@@ -302,15 +315,30 @@ void Nation::colonize()
 
 void Nation::improveArmy()
 {
-	if (resources > 10)
+	//a very militant, economist would want to do this action
+	int chanceOfAction = 100 * (float(militant) / 7 + float(economist) / 15);
+	int outcome = rand() % 100;
+	if (outcome > chanceOfAction)
+		return;
+
+	//its an exponetial relationship between the current army strength and the cost to improve the army
+	float costToImproveArmy = pow(2, army / 5) + 10;
+
+	if (resources > costToImproveArmy)
 	{
-		resources -= 10;
+		resources -= costToImproveArmy;
 		this->army += 1;
 	}
 }
 
 void Nation::declareWarOnEnemyNeighbor()
 {
+	//how much this nation wants to go to war: 100 % * (militant/10 - warExhaustion/100 - #of wars involved in/2)
+	int chanceOfAction = 100 * (float(militant)/10 - float(warExhaustion)/100 - float(wars.size())/2);
+	int outcome = rand() % 100;
+	if (outcome > chanceOfAction)
+		return;
+
 	//for every state that borders another nation, check to see if there is a enemy nation there:
 	for (int i = 0; i < controlledStates.size(); i++)
 	{
@@ -321,25 +349,29 @@ void Nation::declareWarOnEnemyNeighbor()
 		
 		//checking to the left
 		x -= 1;
-		warWithStateOffset(x, y);
+		if (warWithStateOffset(x, y))	//so that only one war can be declared per "turn"
+			return;
 		//right
 		x += 2;
-		warWithStateOffset(x, y);
+		if (warWithStateOffset(x, y))
+			return;
 		//down
 		x -= 1;
 		y += 1;
-		warWithStateOffset(x, y);
+		if (warWithStateOffset(x, y))
+			return;
 		//up
 		y -= 2;
-		warWithStateOffset(x, y);
+		if (warWithStateOffset(x, y))
+			return;
 	}
 }
 
-void Nation::warWithStateOffset(int x, int y)
+bool Nation::warWithStateOffset(int x, int y)
 {
 	//return if the state we are trying to check is outside of the map
 	if (x < 0 || y < 0 || x >= g_map.width || y >= g_map.height)
-		return;
+		return false;
 
 	Nation * possibleBelligerent = g_map.states[x][y].controller;
 
@@ -351,6 +383,9 @@ void Nation::warWithStateOffset(int x, int y)
 			diplomaticRelations[possibleBelligerent] != DiplomaticRelation::belligerent &&
 			diplomaticRelations[possibleBelligerent] != DiplomaticRelation::ally)
 		{
+			//sizing up the enemy (if the enemy is 25% bigger than this nation):
+			if (getDevelopment() < 0.75 * float(possibleBelligerent->getDevelopment()))
+				return false;
 			//changing color of console output
 			HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 			SetConsoleTextAttribute(hConsole, 12);
@@ -360,9 +395,13 @@ void Nation::warWithStateOffset(int x, int y)
 
 			//actually do war stuff
 			new War(this, possibleBelligerent);
-			return;
+			return true;
 		}
+		else
+			return false;
 	}
+	else
+		return false;
 }
 
 void Nation::allyWith(Nation * newAlly)
@@ -712,6 +751,29 @@ void Nation::update()
 
 	//repair army as much as possible
 	repairArmy();
+
+	//STABILLITY STUFF
+
+	//there is a 1% chance of regaining stabillity if the nation is not at war
+	if (wars.size() == 0)
+	{
+		if (rand() % 100 == 1)
+			stability++;
+	}
+
+	//going into debt
+	if (resources < 0)
+	{
+		this->stability--;
+		this->resources = abs(revenue) * 5;	// enough cash to last for another 5 "turns"
+	}
+
+	//war exhaustion 
+	if (warExhaustion >= 40)
+	{
+		this->stability--;
+		this->warExhaustion = 0;	//reset warExhaustion
+	}
 
 	//DIPLOMATIC STUFF
 

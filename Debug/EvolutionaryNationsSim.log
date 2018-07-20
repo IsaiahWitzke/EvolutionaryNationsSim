@@ -1,1 +1,71 @@
-﻿  EvolutionaryNationsSim.vcxproj -> C:\Users\witzk\Documents\GitHub\EvolutionaryNationsSim\Debug\EvolutionaryNationsSim.exe
+﻿  ButtonHandler.cpp
+c:\users\witzk\documents\github\evolutionarynationssim\buttonhandler.cpp(18): warning C4018: '<': signed/unsigned mismatch
+  ButtonTemplate.cpp
+  InputHandler.cpp
+c:\users\witzk\documents\github\evolutionarynationssim\inputhandler.cpp(36): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\witzk\documents\github\evolutionarynationssim\inputhandler.cpp(88): warning C4305: '=': truncation from 'double' to 'float'
+  Main.cpp
+c:\users\witzk\documents\github\evolutionarynationssim\main.cpp(50): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\main.cpp(70): warning C4305: 'argument': truncation from 'double' to 'float'
+  MapHandler.cpp
+c:\users\witzk\documents\github\evolutionarynationssim\maphandler.cpp(76): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\maphandler.cpp(103): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\maphandler.cpp(160): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\maphandler.cpp(162): warning C4018: '<': signed/unsigned mismatch
+  Nation.cpp
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(142): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(161): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(180): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(191): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(264): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(319): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(325): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(337): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(343): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(449): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(453): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(477): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(529): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(610): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(629): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(642): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(644): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(657): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(669): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(690): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(694): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(709): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(743): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(745): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(747): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  State.cpp
+  TextHandler.cpp
+c:\users\witzk\documents\github\evolutionarynationssim\texthandler.cpp(27): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\texthandler.cpp(36): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+c:\users\witzk\documents\github\evolutionarynationssim\texthandler.cpp(45): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\texthandler.cpp(51): warning C4018: '<': signed/unsigned mismatch
+  War.cpp
+c:\users\witzk\documents\github\evolutionarynationssim\war.cpp(23): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\war.cpp(34): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\war.cpp(55): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\war.cpp(70): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\war.cpp(84): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\war.cpp(89): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\war.cpp(99): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\war.cpp(115): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\war.cpp(121): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\war.cpp(148): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\war.cpp(150): warning C4305: '*=': truncation from 'double' to 'float'
+c:\users\witzk\documents\github\evolutionarynationssim\war.cpp(153): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\war.cpp(155): warning C4305: '*=': truncation from 'double' to 'float'
+c:\users\witzk\documents\github\evolutionarynationssim\war.cpp(169): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\war.cpp(171): warning C4305: '*=': truncation from 'double' to 'float'
+c:\users\witzk\documents\github\evolutionarynationssim\war.cpp(173): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\war.cpp(175): warning C4305: '*=': truncation from 'double' to 'float'
+c:\users\witzk\documents\github\evolutionarynationssim\war.cpp(186): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\war.cpp(191): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\war.cpp(200): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
+c:\users\witzk\documents\github\evolutionarynationssim\maphandler.cpp(185): warning C4715: 'MapHandler::readBMP': not all control paths return a value
+c:\users\witzk\documents\github\evolutionarynationssim\buttontemplate.cpp(23): warning C4715: 'ButtonTemplate::readBMP': not all control paths return a value
+  EvolutionaryNationsSim.vcxproj -> C:\Users\witzk\Documents\GitHub\EvolutionaryNationsSim\Debug\EvolutionaryNationsSim.exe

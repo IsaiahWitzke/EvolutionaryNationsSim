@@ -472,6 +472,11 @@ void Nation::declareWarOnEnemyNeighbor()
 	}
 }
 
+void Nation::improveRelationsWithNonAlly()
+{
+	// finds nation that is 
+}
+
 bool Nation::warWithStateOffset(int x, int y)
 {
 	//return if the state we are trying to check is outside of the map

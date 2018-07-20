@@ -118,12 +118,14 @@ public:
 	void declareWarOnEnemyNeighbor();	// if there is a neighbor who is an enemy, and who's strength is relative or weaker than than the current nation's alliance, then go to war
 		
 	void improveRelationsWithNonAlly();	// finds a nation who is not an ally, has a good opinion of the current nation, and attempts to better relations with that nation
+	void improveRelationsWithAlly();	// so that if there is an alliance that is not doing so well, the nation can attempt to save it
+	void breakAlliance();	// if there is an alliance that this nation has with another who doesnt think so well of this nation, the nation can break the alliance
+	void attemptToAlly();	// finds a nation who is not an ally, has a good opinion of the current nation, and attempts to ally them
+
 	void improveRelationsWithVassal();	// if there is a vassal who is not friendly, then attempt to improve relations
 	void attemptToIntegrateVassal();	// attempts to integrate a vassal into nation
-	void attemptToAlly();	// finds a nation who is not an ally, has a good opinion of the current nation, and attempts to ally them
 	void maintainStabiliy();	// attempts to keep the nation's stability at a reasonable level
 	void developeState();	// improves the development of a random state
-	void saveResources();	// won't do anything, leaves the nation's update to save money for the next time around
 
 	//things to do with war
 	vector<War*> wars;	// all the wars that the nation is involved in

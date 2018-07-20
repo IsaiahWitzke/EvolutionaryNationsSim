@@ -63,7 +63,7 @@ public:
 	
 	
 	int warExhaustion = 0;	// if this ever exceeds 40, stabillity drops, but war warExhuastion drops back to 0
-	int stability = 5;		// how stable the nation is. If ever negative, the nation breaks
+	int stability = 1;		// how stable the nation is. If ever negative, the nation breaks
 
 	void breakNation();
 

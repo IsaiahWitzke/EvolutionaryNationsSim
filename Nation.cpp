@@ -13,6 +13,8 @@ Nation::Nation(Color color, string name)
 	this->diplomat = rand() % 10;
 	this->militant = rand() % 10;
 	this->economist = rand() % 10;
+
+	initDiplomacy();
 }
 
 Nation::~Nation()
@@ -23,10 +25,22 @@ void Nation::breakNation()
 {
 	//starting new nations
 	vector<Nation*> newNations;
+
+	//the number of new nations that will split off of this parent nation will be between 2 and #ofStates/40
+	int numberOfNewNations;
+	
+	if (controlledStates.size() / 40 == 0)
+		numberOfNewNations = 2;
+	else
+		numberOfNewNations = controlledStates.size() / 40;
+	
+	//so that the new nations arent just initialized with and army of 1 and get steam-rolled 
+	int armyForNewNations = army / numberOfNewNations;
+
 	for (int i = 0; i < controlledStates.size(); i++)
 	{
-		//every 100th state will be the start of a new nation
-		if (i % 100 == 1)
+		//every nation will split into 
+		if (controlledStates.size() == 1 || i % (controlledStates.size()/numberOfNewNations) == 0)
 		{
 			//finding the name of the nation in the "NationNames.txt" file (found in the assets folder)
 			string nationNamesPath = "Assets/NationNames.txt";
@@ -93,9 +107,12 @@ void Nation::breakNation()
 
 	removeSelf();
 
+	//diplomacy for all new nations:
 	for (int i = 0; i < newNations.size(); i++)
 	{
 		newNations[i]->initDiplomacy();
+		//also army
+		newNations[i]->army = armyForNewNations;
 	}
 
 	//go through all the nations and spread them out as mush as possible
@@ -585,7 +602,7 @@ void Nation::takeStates()
 		}
 
 		//figure out if it is time to end the war. If we can continue to obliterate the enemy then continue, otherwise, stop the war
-		float alliesStrength = 0;
+		float alliesStrength = army*armyStrength;
 		float enemyStrength = 0;
 		for (auto& diplomaticRelationPair : diplomaticRelations)
 		{
@@ -599,14 +616,15 @@ void Nation::takeStates()
 			}
 		}
 
+		//for simplicity, the warscore will just be possitve, and every time a state is taken, 5 will be deducted
+		wars[i]->warScore = abs(wars[i]->warScore);
+
 		//if our side is better than theirs AND we havent already obliterated them, then keep on going with the current war
 		if (alliesStrength > enemyStrength && wars[i]->warScore < 100)
 		{
 			continue;
 		}
 		
-		//for simplicity, the warscore will just be possitve, and every time a state is taken, 5 will be deducted
-		wars[i]->warScore = abs(wars[i]->warScore);
 
 		//we are trying to take as many states as possible
 		while (wars[i]->warScore >= 5)
@@ -625,13 +643,13 @@ void Nation::takeStates()
 				{
 					addContolledState(&g_map.states[x][y]);
 					wars[i]->warScore -= 5;
-					continue;
+					break;
 				}
 				if (x > -1 && !isAttacker && (g_map.states[x][y].controller == wars[i]->leadAttacker))
 				{
 					addContolledState(&g_map.states[x][y]);
 					wars[i]->warScore -= 5;
-					continue;
+					break;
 				}
 				//right
 				x += 2;
@@ -639,13 +657,13 @@ void Nation::takeStates()
 				{
 					addContolledState(&g_map.states[x][y]);
 					wars[i]->warScore -= 5;
-					continue;
+					break;
 				}
 				if (x < g_map.width && !isAttacker && (g_map.states[x][y].controller == wars[i]->leadAttacker))
 				{
 					addContolledState(&g_map.states[x][y]);
 					wars[i]->warScore -= 5;
-					continue;
+					break;
 				}
 				//down
 				x -= 1;
@@ -654,13 +672,13 @@ void Nation::takeStates()
 				{
 					addContolledState(&g_map.states[x][y]);
 					wars[i]->warScore -= 5;
-					continue;
+					break;
 				}
 				if (y < g_map.height && !isAttacker && (g_map.states[x][y].controller == wars[i]->leadAttacker))
 				{
 					addContolledState(&g_map.states[x][y]);
 					wars[i]->warScore -= 5;
-					continue;
+					break;
 				}
 				//up
 				y -= 2;
@@ -668,13 +686,13 @@ void Nation::takeStates()
 				{
 					addContolledState(&g_map.states[x][y]);
 					wars[i]->warScore -= 5;
-					continue;
+					break;
 				}
 				if (y > -1 && !isAttacker && (g_map.states[x][y].controller == wars[i]->leadAttacker))
 				{
 					addContolledState(&g_map.states[x][y]);
 					wars[i]->warScore -= 5;
-					continue;
+					break;
 				}
 			}
 
@@ -697,11 +715,22 @@ void Nation::initDiplomacy()
 	{
 		//we don't need relationships with ourselves
 		if (g_map.nations[i] == this)
-		{
 			continue;
+
+		//if we already have diplomatic relations with this nation, continue
+		bool alreadyKnowEachother = false;
+		for (auto &nationDiploView : g_map.nations[i]->diplomaticViews)
+		{
+			if (nationDiploView.first == this)
+				alreadyKnowEachother = true;
 		}
+		if (alreadyKnowEachother)
+			continue;
+
 		this->diplomaticViews.emplace(g_map.nations[i], DiplomaticView::neutral);
 		this->diplomaticRelations.emplace(g_map.nations[i], DiplomaticRelation::nothing);
+		g_map.nations[i]->diplomaticViews.emplace(this, DiplomaticView::neutral);
+		g_map.nations[i]->diplomaticRelations.emplace(this, DiplomaticRelation::nothing);
 	}
 }
 
@@ -751,12 +780,12 @@ void Nation::removeSelf()
 	//finally, get rid of self in the g_map so it will never be updated again
 	for (int i = 0; i < g_map.nations.size(); i++)
 	{
-		//we don't need relationships with ourselves
 		if (g_map.nations[i] == this)
 		{
 			g_map.nations.erase(g_map.nations.begin() + i);
 		}
 	}
+
 }
 
 void Nation::updateRelationships()
@@ -808,11 +837,7 @@ void Nation::update()
 	if (controlledStates.size() == 0)
 		removeSelf();
 
-	//for the first time that the update function is called, we want to initialize the diplomatic views/reationships with other nations
-	if (diplomaticViews.size() == 0)
-		initDiplomacy();
-
-	updateRelationships();
+	updateRelationships();	// helps when wars end
 
 	//MONEY STUFF
 

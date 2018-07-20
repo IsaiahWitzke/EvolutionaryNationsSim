@@ -148,12 +148,12 @@ void War::battle()
 		for (int i = 0; i < defenders.size(); i++)
 		{
 			defenders[i]->armyStrength *= 0.3;
-			defenders[i]->warExhaustion += 1;
+			defenders[i]->warExhaustion += 4;
 		}
 		for (int i = 0; i < attackers.size(); i++)
 		{
 			attackers[i]->armyStrength *= 0.8;
-			attackers[i]->warExhaustion += 4;
+			attackers[i]->warExhaustion += 1;
 		}
 	}
 
@@ -169,10 +169,12 @@ void War::battle()
 		for (int i = 0; i < defenders.size(); i++)
 		{
 			defenders[i]->armyStrength *= 0.8;
+			defenders[i]->warExhaustion += 1;
 		}
 		for (int i = 0; i < attackers.size(); i++)
 		{
 			attackers[i]->armyStrength *= 0.3;
+			attackers[i]->warExhaustion += 4;
 		}
 	}
 

@@ -1,33 +1,33 @@
 ﻿  Nation.cpp
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(26): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(44): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(89): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(96): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(106): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(237): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(256): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(275): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(286): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(355): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(369): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(407): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(413): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(425): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(431): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(535): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(539): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(563): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(615): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(696): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(712): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(725): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(727): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(740): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(752): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(773): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(777): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(792): warning C4018: '<': signed/unsigned mismatch
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(820): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(822): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(824): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(40): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(58): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(103): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(111): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(123): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(254): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(273): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(292): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(303): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(372): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(386): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(424): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(430): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(442): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(448): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(552): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(556): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(580): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(633): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(714): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(741): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(754): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(756): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(769): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(781): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(802): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(806): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(821): warning C4018: '<': signed/unsigned mismatch
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(845): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(847): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\witzk\documents\github\evolutionarynationssim\nation.cpp(849): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   EvolutionaryNationsSim.vcxproj -> C:\Users\witzk\Documents\GitHub\EvolutionaryNationsSim\Debug\EvolutionaryNationsSim.exe

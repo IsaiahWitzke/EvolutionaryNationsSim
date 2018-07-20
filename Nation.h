@@ -61,13 +61,16 @@ public:
 
 	Color nationColor;
 	
+	
+	int warExhaustion = 0;	// if this ever exceeds 40, stabillity drops, but war warExhuastion drops back to 0
+	int stability = 5;		// how stable the nation is. If ever negative, the nation breaks
 
-	int stability = 5;	// how stable the nation is. If ever negative, the nation breaks
+	void breakNation();
+
 	map<Nation *, DiplomaticView> diplomaticViews;			// a map of the nation's diplomatic views with others
 	map<Nation *, DiplomaticRelation> diplomaticRelations;	// a map of the nation's diplomatic relationships with others
 
-	// if this ever exceeds 100, stabillity drops, but war warExhuastion drops back to 0
-	int warExhaustion = 0;
+	
 
 	//to be able to print info, we need a string output of these pairs
 	void printDiplomaticView(Nation * nation);
@@ -88,7 +91,6 @@ public:
 	//to increase/decrease relations
 	void increaseRelations(Nation *nation);
 	void decreaseRelations(Nation *nation);
-	
 
 	//how much resources the nation has. It is with the resources that the nation can excecute actions
 	//gain resources at beginning of turn. The more development, the more resources gained

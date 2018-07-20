@@ -19,6 +19,101 @@ Nation::~Nation()
 {
 }
 
+void Nation::breakNation()
+{
+	//starting new nations
+	vector<Nation*> newNations;
+	for (int i = 0; i < controlledStates.size(); i++)
+	{
+		//every 100th state will be the start of a new nation
+		if (i % 100 == 1)
+		{
+			//finding the name of the nation in the "NationNames.txt" file (found in the assets folder)
+			string nationNamesPath = "Assets/NationNames.txt";
+			string newNationName = "";
+			string lineInTxt;
+			ifstream myfile(nationNamesPath);
+			if (myfile.is_open())
+			{
+				//a flag that turns true once a valid nation name has been found
+				bool foundNationName = false;
+				while (getline(myfile, lineInTxt) && !foundNationName)
+				{
+					//making sure that there is no nation already named the nation name
+					bool foundSimillarNationName = false;
+					for (int j = 0; j < g_map.nations.size(); j++)
+					{
+						//if we found a simmilar nation name, then we want to get a new line from the txt and try again
+						if (g_map.nations[j]->nationName == lineInTxt)
+							foundSimillarNationName = true;
+					}
+					if (foundSimillarNationName)
+						continue;
+					else
+					{
+						newNationName = lineInTxt;
+						foundNationName = true;
+					}
+				}
+				//if we havent found a nation name, give an error:
+				if (!foundNationName)
+				{
+					cout << "Unable to find enough unique names in file " << nationNamesPath << " try adding some new nation names? (Nation.cpp)" << endl;
+					myfile.close();
+					system("pause");
+				}
+
+				myfile.close();
+			}
+			else
+			{
+				cout << "Unable to open file " << nationNamesPath << endl;
+				system("pause");
+			}
+
+			//figuring out a random color
+			int r = rand() % 255;
+			int g = rand() % 255;
+			int b = rand() % 255;
+
+			Nation *tempNation = new Nation(Color(r,g,b,255), newNationName);
+			newNations.push_back(tempNation);
+
+			//adding the nation to the array of nations
+			g_map.nations.push_back(tempNation);
+			g_map.nations[g_map.nations.size() - 1]->addContolledState(controlledStates[i]);
+		}
+	}
+
+	//get rid of all the previous nation's states
+	for (int i = 0; i < controlledStates.size(); i++)
+	{
+		controlledStates[i]->controller = NULL;
+	}
+
+	removeSelf();
+
+	for (int i = 0; i < newNations.size(); i++)
+	{
+		newNations[i]->initDiplomacy();
+	}
+
+	//go through all the nations and spread them out as mush as possible
+	bool isSpreading = true;
+	while (isSpreading)
+	{
+		isSpreading = false;
+		for (int i = 0; i < newNations.size(); i++)
+		{
+			int statesBeforeSpreading = newNations[i]->controlledStates.size();
+			newNations[i]->spread();
+
+			if (statesBeforeSpreading != newNations[i]->controlledStates.size())
+				isSpreading = true;
+		}
+	}
+}
+
 void Nation::printDiplomaticView(Nation * nation)
 {
 	DiplomaticView nationView = diplomaticViews[nation];
@@ -252,65 +347,58 @@ void Nation::spread()
 
 void Nation::colonize()
 {
-	//it will take 10 resources to complete this task:
-	if (this->resources < 10)
+	//this action can be done multiple times per turn:
+	while (true)
 	{
-		return;
+		// nations of all kinds would see colonizing as a good thing to do
+		// but an economist would want to do this action a lot more 
+		int chanceOfAction = 100 * (float(economist) / 10 + 0.5);
+		int outcome = rand() % 100;
+		if (outcome > chanceOfAction)
+			return;
+
+		//it will take 10 resources to complete this task:
+		if (this->resources < 10)
+		{
+			return;
+		}
+
+		//to keep track of the best looking state to colonize
+		State *bestOption = NULL;
+
+		for (int i = 0; i < controlledStates.size(); i++)
+		{
+			//checking states around current one
+			//some relative coordinates
+			int x = controlledStates[i]->positionInMap.x;
+			int y = controlledStates[i]->positionInMap.y;
+			//checking to the left
+			if (x != 0 && g_map.states[x - 1][y].controller == NULL)
+				//if there a valid state to the left, then we will see if it is any better than the current "bestOption"
+				if (bestOption == NULL || g_map.states[x - 1][y].development > bestOption->development)
+					bestOption = &g_map.states[x - 1][y];
+			//to the right
+			if (x != g_map.width - 1 && g_map.states[x + 1][y].controller == NULL)
+				if (bestOption == NULL || g_map.states[x + 1][y].development > bestOption->development)
+					bestOption = &g_map.states[x + 1][y];
+			//down
+			if (y != g_map.height - 1 && g_map.states[x][y + 1].controller == NULL)
+				if (bestOption == NULL || g_map.states[x][y + 1].development > bestOption->development)
+					bestOption = &g_map.states[x][y + 1];
+			//up
+			if (y != 0 && g_map.states[x][y - 1].controller == NULL)
+				if (bestOption == NULL || g_map.states[x][y - 1].development > bestOption->development)
+					bestOption = &g_map.states[x][y - 1];
+		}
+
+		//if there are no states possible to colonize, then just stop:
+		if (bestOption == NULL)
+			return;
+
+		//otherwise we want to add the bestOption to the control of the nation and move take away resources:
+		addContolledState(bestOption);
+		resources -= 10;
 	}
-
-	//to keep track of the best looking state to colonize
-	State *bestOption = NULL;
-
-	for (int i = 0; i < controlledStates.size(); i++)
-	{
-		//checking states around current one
-		//some relative coordinates
-		int x = controlledStates[i]->positionInMap.x;
-		int y = controlledStates[i]->positionInMap.y;
-		//checking to the left
-		if (x != 0 && g_map.states[x - 1][y].controller == NULL)
-		{
-			//if there a valid state to the left, then we will see if it is any better than the current "bestOption"
-			if (bestOption == NULL || g_map.states[x - 1][y].development > bestOption->development)
-			{
-				bestOption = &g_map.states[x - 1][y];
-			}
-		}
-		//to the right
-		if (x != g_map.width - 1 && g_map.states[x + 1][y].controller == NULL)
-		{
-			if (bestOption == NULL || g_map.states[x + 1][y].development > bestOption->development)
-			{
-				bestOption = &g_map.states[x + 1][y];
-			}
-		}
-		//down
-		if (y != g_map.height - 1 && g_map.states[x][y + 1].controller == NULL)
-		{
-			if (bestOption == NULL || g_map.states[x][y + 1].development > bestOption->development)
-			{
-				bestOption = &g_map.states[x][y + 1];
-			}
-		}
-		//up
-		if (y != 0 && g_map.states[x][y - 1].controller == NULL)
-		{
-			if (bestOption == NULL || g_map.states[x][y - 1].development > bestOption->development)
-			{
-				bestOption = &g_map.states[x][y - 1];
-			}
-		}
-	}
-
-	//if there are no states possible to colonize, then just stop:
-	if (bestOption == NULL)
-	{
-		return;
-	}
-
-	//otherwise we want to add the bestOption to the control of the nation and move take away resources:
-	addContolledState(bestOption);
-	resources -= 10;
 }
 
 void Nation::improveArmy()
@@ -397,11 +485,9 @@ bool Nation::warWithStateOffset(int x, int y)
 			new War(this, possibleBelligerent);
 			return true;
 		}
-		else
-			return false;
 	}
-	else
-		return false;
+	
+	return false;
 }
 
 void Nation::allyWith(Nation * newAlly)
@@ -456,14 +542,14 @@ void Nation::attackEnemyArmy()
 				isDefender = true;
 		}
 
-		//if we are the attacker and the "chanceOfAttackerWinningBattle" is > 0.5, then do it
-		if (float(wars[i]->chanceOfAttackerWinningBattle()) > 0.5 && !isDefender)
+		//if we are the attacker and the "chanceOfAttackerWinningBattle" is > 0.4, then do it
+		if (float(wars[i]->chanceOfAttackerWinningBattle()) > 0.4 && !isDefender)
 		{
 			wars[i]->battle();
 			continue;
 		}
-		//if we are the defender and the "chanceOfAttackerWinningBattle" is < 0.5, then do it
-		if (float(wars[i]->chanceOfAttackerWinningBattle()) < 0.5 && isDefender)
+		//if we are the defender and the "chanceOfAttackerWinningBattle" is < 0.4, then do it
+		if (float(wars[i]->chanceOfAttackerWinningBattle()) < 0.4 && isDefender)
 		{
 			wars[i]->battle();
 			continue;
@@ -617,9 +703,6 @@ void Nation::initDiplomacy()
 		this->diplomaticViews.emplace(g_map.nations[i], DiplomaticView::neutral);
 		this->diplomaticRelations.emplace(g_map.nations[i], DiplomaticRelation::nothing);
 	}
-	//everybody is going to ally afganastan for testing purposes:
-	if (this != g_map.nations[0])
-		allyWith(g_map.nations[0]);
 }
 
 void Nation::removeSelf()
@@ -717,25 +800,19 @@ void Nation::updateRelationships()
 
 void Nation::update()
 {
+	//if the nation has no stabillity, it breaks
+	if (stability < 1)
+		breakNation();
+
 	//if the nation has 0 states, it needs to be removed:
 	if (controlledStates.size() == 0)
-	{
 		removeSelf();
-	}
 
 	//for the first time that the update function is called, we want to initialize the diplomatic views/reationships with other nations
 	if (diplomaticViews.size() == 0)
-	{
 		initDiplomacy();
-	}
 
 	updateRelationships();
-
-	//IN FUTURE:
-	//there will be an array of functions/actions that the nation can do 
-	//every nation has the same set of functions/actions, however, every nation has the array in a unique order
-	//this update function will cycle through the array from top to bottom and attempt to do the actions at the top first
-	//this is how different nations differ from each other
 
 	//MONEY STUFF
 
@@ -749,16 +826,16 @@ void Nation::update()
 	this->revenue = taxIncome - stateMaintenance - armyMaintenance;
 	this->resources += revenue;
 
-	//repair army as much as possible
-	repairArmy();
-
+	
 	//STABILLITY STUFF
 
-	//there is a 1% chance of regaining stabillity if the nation is not at war
+	//there is a 0.5% chance of regaining stabillity if the nation is not at war (also war exhaustion decreases)
 	if (wars.size() == 0)
 	{
-		if (rand() % 100 == 1)
-			stability++;
+		if (rand() % 200 == 1 && stability < 5)
+			this->stability++;
+		if (rand() % 10 == 1 && warExhaustion > 0)
+			this->warExhaustion--;
 	}
 
 	//going into debt
@@ -780,33 +857,26 @@ void Nation::update()
 	//chance of decreasing relations with other nations bordering the current country
 	borderConflicts();
 
-	//dont want to be in more than 1 war at a time
+	declareWarOnEnemyNeighbor();
+
+	//peace deals
 	if (wars.size() != 0)
 	{
-		//peace deals
 		takeStates();
 	}
-	else
-	{
-		declareWarOnEnemyNeighbor();
-	}
+
+	//repair army as much as possible before going into battle
+	repairArmy();
 
 	//if at war attack the enemy army
 	if (wars.size() != 0)
 	{
 		attackEnemyArmy();
 	}
-
 	//repair army as much as possible (again)
 	repairArmy();
 
-	//colonization
-	while (true)
-	{
-		int statesBeforeColonizing = controlledStates.size();
-		colonize();
-		improveArmy();
-		if (controlledStates.size() == statesBeforeColonizing)
-			break;
-	}
+	//all other actions
+	improveArmy();
+	colonize();
 }

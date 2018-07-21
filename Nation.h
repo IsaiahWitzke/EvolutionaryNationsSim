@@ -48,6 +48,7 @@ private:
 	void removeSelf();	//gets rid of self. called when the nation dies
 	void updateRelationships();	// goes through all the diplomatic relationships and makes sure that any belligarants are actually in the opposing side in wars
 
+
 public:
 	
 	string nationName;
@@ -117,7 +118,8 @@ public:
 	void improveArmy();	// improves the "army" int by one
 	void declareWarOnEnemyNeighbor();	// if there is a neighbor who is an enemy, and who's strength is relative or weaker than than the current nation's alliance, then go to war
 		
-	void improveRelationsWithNonAlly();	// finds a nation who is not an ally, has a good opinion of the current nation, and attempts to better relations with that nation
+	void improveRelationsWithNeighbor();	// finds a neighbor nation who is not an ally, has a good opinion of the current nation, and attempts to better relations with that nation
+	void improveRelationsWithNonNeighbor();	// 
 	void improveRelationsWithAlly();	// so that if there is an alliance that is not doing so well, the nation can attempt to save it
 	void breakAlliance();	// if there is an alliance that this nation has with another who doesnt think so well of this nation, the nation can break the alliance
 	void attemptToAlly();	// finds a nation who is not an ally, has a good opinion of the current nation, and attempts to ally them

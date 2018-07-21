@@ -472,9 +472,250 @@ void Nation::declareWarOnEnemyNeighbor()
 	}
 }
 
-void Nation::improveRelationsWithNonAlly()
+void Nation::improveRelationsWithNeighbor()
 {
-	// finds nation that is 
+	//a diplomatic nation would want to increase relations with everybody, however, a militant nation wants to attack their neighbors
+	int chanceOfAction = 100 * (float(diplomat) / 10 - float(militant) / 10 + 0.1);
+	int outcome = rand() % 100;
+	if (outcome > chanceOfAction)
+		return;
+
+	// costs 10 resources
+	if (resources < 10)
+		return;
+
+	//finds all neighbors
+	vector<Nation*> neighbors;
+	for (int i = 0; i < controlledStates.size(); i++)
+	{
+		//checking states around current one
+		//some relative coordinates
+		int x = controlledStates[i]->positionInMap.x;
+		int y = controlledStates[i]->positionInMap.y;
+
+		//checking to the left
+		x -= 1;
+		if (x >= 0 && g_map.states[x][y].controller != this && g_map.states[x][y].controller != NULL)
+		{
+			//to avoid duplicates in vector
+			bool alreadyFoundNeighbor = false;
+			for (int j = 0; j < neighbors.size(); j++)
+			{
+				if (neighbors[j] == g_map.states[x][y].controller)
+				{
+					alreadyFoundNeighbor = true;
+				}
+			}
+
+			if (!alreadyFoundNeighbor)
+				neighbors.push_back(g_map.states[x][y].controller);
+		}
+		//right
+		x += 2;
+		if (x < g_map.width && g_map.states[x][y].controller != this && g_map.states[x][y].controller != NULL)
+		{
+			//to avoid duplicates in vector
+			bool alreadyFoundNeighbor = false;
+			for (int j = 0; j < neighbors.size(); j++)
+			{
+				if (neighbors[j] == g_map.states[x][y].controller)
+				{
+					alreadyFoundNeighbor = true;
+				}
+			}
+
+			if (!alreadyFoundNeighbor)
+				neighbors.push_back(g_map.states[x][y].controller);
+		}
+		//down
+		x -= 1;
+		y += 1;
+		if (y < g_map.height && g_map.states[x][y].controller != this && g_map.states[x][y].controller != NULL)
+		{
+			//to avoid duplicates in vector
+			bool alreadyFoundNeighbor = false;
+			for (int j = 0; j < neighbors.size(); j++)
+			{
+				if (neighbors[j] == g_map.states[x][y].controller)
+				{
+					alreadyFoundNeighbor = true;
+				}
+			}
+
+			if (!alreadyFoundNeighbor)
+				neighbors.push_back(g_map.states[x][y].controller);
+		}
+		//up
+		y -= 2;
+		if (y >= 0 && g_map.states[x][y].controller != this && g_map.states[x][y].controller != NULL)
+		{
+			//to avoid duplicates in vector
+			bool alreadyFoundNeighbor = false;
+			for (int j = 0; j < neighbors.size(); j++)
+			{
+				if (neighbors[j] == g_map.states[x][y].controller)
+				{
+					alreadyFoundNeighbor = true;
+				}
+			}
+
+			if (!alreadyFoundNeighbor)
+				neighbors.push_back(g_map.states[x][y].controller);
+		}
+	}
+
+	if (neighbors.size() == 0)
+		return;
+
+	//now that we have our neighbors, improve relations with a random one
+	int nationToImpress = rand() % neighbors.size();
+
+	//chance that the nation will not accept the kind gesture
+	int chanceOfAccepting = 100 * (float(neighbors[nationToImpress]->diplomat) / 10 - float(neighbors[nationToImpress]->militant) / 15 + 0.1);
+	//if the nation is already hostile towards this, then an even lower chance:
+	if (neighbors[nationToImpress]->diplomaticViews[this] == hostile)
+		chanceOfAccepting -= 20;
+	if (neighbors[nationToImpress]->diplomaticViews[this] == uneasy)
+		chanceOfAccepting -= 10;
+
+	//only if the other nation accepts the relations will be improved, but the resources will still be deducted
+	if (rand() % 100 < chanceOfAccepting)
+		increaseRelations(neighbors[nationToImpress]);
+
+	this->resources -= 10;
+}
+
+void Nation::improveRelationsWithNonNeighbor()
+{
+	//a diplomatic nation would want to increase relations with everybody, however,
+	//a militant nation wants to attack everybody, but still kinda understands the need to have friends if other places
+	int chanceOfAction = 100 * (float(diplomat) / 10 - float(militant) / 20 + 0.1);
+	int outcome = rand() % 100;
+	if (outcome > chanceOfAction)
+		return;
+
+	// costs 10 resources
+	if (resources < 10)
+		return;
+
+	//finds all neighbors
+	vector<Nation*> neighbors;
+	for (int i = 0; i < controlledStates.size(); i++)
+	{
+		//checking states around current one
+		//some relative coordinates
+		int x = controlledStates[i]->positionInMap.x;
+		int y = controlledStates[i]->positionInMap.y;
+
+		//checking to the left
+		x -= 1;
+		if (x >= 0 && g_map.states[x][y].controller != this && g_map.states[x][y].controller != NULL)
+		{
+			//to avoid duplicates in vector
+			bool alreadyFoundNeighbor = false;
+			for (int j = 0; j < neighbors.size(); j++)
+			{
+				if (neighbors[j] == g_map.states[x][y].controller)
+				{
+					alreadyFoundNeighbor = true;
+				}
+			}
+
+			if (!alreadyFoundNeighbor)
+				neighbors.push_back(g_map.states[x][y].controller);
+		}
+		//right
+		x += 2;
+		if (x < g_map.width && g_map.states[x][y].controller != this && g_map.states[x][y].controller != NULL)
+		{
+			//to avoid duplicates in vector
+			bool alreadyFoundNeighbor = false;
+			for (int j = 0; j < neighbors.size(); j++)
+			{
+				if (neighbors[j] == g_map.states[x][y].controller)
+				{
+					alreadyFoundNeighbor = true;
+				}
+			}
+
+			if (!alreadyFoundNeighbor)
+				neighbors.push_back(g_map.states[x][y].controller);
+		}
+		//down
+		x -= 1;
+		y += 1;
+		if (y < g_map.height && g_map.states[x][y].controller != this && g_map.states[x][y].controller != NULL)
+		{
+			//to avoid duplicates in vector
+			bool alreadyFoundNeighbor = false;
+			for (int j = 0; j < neighbors.size(); j++)
+			{
+				if (neighbors[j] == g_map.states[x][y].controller)
+				{
+					alreadyFoundNeighbor = true;
+				}
+			}
+
+			if (!alreadyFoundNeighbor)
+				neighbors.push_back(g_map.states[x][y].controller);
+		}
+		//up
+		y -= 2;
+		if (y >= 0 && g_map.states[x][y].controller != this && g_map.states[x][y].controller != NULL)
+		{
+			//to avoid duplicates in vector
+			bool alreadyFoundNeighbor = false;
+			for (int j = 0; j < neighbors.size(); j++)
+			{
+				if (neighbors[j] == g_map.states[x][y].controller)
+				{
+					alreadyFoundNeighbor = true;
+				}
+			}
+
+			if (!alreadyFoundNeighbor)
+				neighbors.push_back(g_map.states[x][y].controller);
+		}
+	}
+
+	//now that we have our neighbors, find the non-neighboring ones
+	vector<Nation*> nonNeighbors;
+	for (int i = 0; i < g_map.nations.size(); i++)
+	{
+		bool isNeighbor = false;
+		for (int j = 0; j < neighbors.size(); j++)
+		{
+			if (neighbors[j] == g_map.nations[i])
+			{
+				isNeighbor = true;
+			}
+		}
+
+		if (!isNeighbor && g_map.nations[i] != this)
+			nonNeighbors.push_back(g_map.nations[i]);
+	}
+
+	//if no non neighbors, return
+	if (nonNeighbors.size() == 0)
+		return;
+
+	int nationToImpress = rand() % nonNeighbors.size();
+
+	//chance that the nation will not accept the kind gesture
+	int chanceOfAccepting = 100 * (float(nonNeighbors[nationToImpress]->diplomat) / 10 - float(nonNeighbors[nationToImpress]->militant) / 15 + 0.1);
+	//if the nation is already hostile towards this, then an even lower chance:
+	if (nonNeighbors[nationToImpress]->diplomaticViews[this] == hostile)
+		chanceOfAccepting -= 20;
+	if (nonNeighbors[nationToImpress]->diplomaticViews[this] == uneasy)
+		chanceOfAccepting -= 10;
+
+	//only if the other nation accepts the relations will be improved, but the resources will still be deducted
+	if (rand() % 100 < chanceOfAccepting)
+		increaseRelations(nonNeighbors[nationToImpress]);
+
+	this->resources -= 10;
+
+
 }
 
 bool Nation::warWithStateOffset(int x, int y)
@@ -523,18 +764,25 @@ void Nation::allyWith(Nation * newAlly)
 void Nation::increaseRelations(Nation *nation)
 {
 	using IntType = typename std::underlying_type<DiplomaticView>::type;
-	if (this->diplomaticViews[nation] == DiplomaticView::close)	//if we are at the max possible relations, then just leave
-		return;
-	this->diplomaticViews[nation] = static_cast<DiplomaticView>(static_cast<IntType>(this->diplomaticViews[nation]) + 1);
+	// for this nation's opinion of the nation
+	if (this->diplomaticViews[nation] != DiplomaticView::close)	//if we are at the max possible relations, we cant go more
+		this->diplomaticViews[nation] = static_cast<DiplomaticView>(static_cast<IntType>(this->diplomaticViews[nation]) + 1);
+
+	// for the other nation's opinion of this
+	if (nation->diplomaticViews[this] != DiplomaticView::close)
+		nation->diplomaticViews[this] = static_cast<DiplomaticView>(static_cast<IntType>(nation->diplomaticViews[this]) + 1);
 }
 
 void Nation::decreaseRelations(Nation *nation)
 {
-
 	using IntType = typename std::underlying_type<DiplomaticView>::type;
-	if (this->diplomaticViews[nation] == DiplomaticView::hostile)	//if we are at the min possible relations, then just leave
-		return;
-	this->diplomaticViews[nation] = static_cast<DiplomaticView>(static_cast<IntType>(this->diplomaticViews[nation]) - 1);
+	// for this nation's opinion of the nation
+	if (this->diplomaticViews[nation] != DiplomaticView::hostile)	//if we are at the min possible relations, we cant go more
+		this->diplomaticViews[nation] = static_cast<DiplomaticView>(static_cast<IntType>(this->diplomaticViews[nation]) - 1);
+
+	// for the other nation's opinion of this
+	if (nation->diplomaticViews[this] != DiplomaticView::hostile)
+		nation->diplomaticViews[this] = static_cast<DiplomaticView>(static_cast<IntType>(nation->diplomaticViews[this]) - 1);
 }
 
 void Nation::repairArmy()
@@ -886,6 +1134,9 @@ void Nation::update()
 
 	//chance of decreasing relations with other nations bordering the current country
 	borderConflicts();
+
+	improveRelationsWithNeighbor();
+	improveRelationsWithNonNeighbor();
 
 	declareWarOnEnemyNeighbor();
 

@@ -1011,7 +1011,6 @@ void Nation::initDiplomacy()
 
 void Nation::removeSelf()
 {
-
 	//go through all nations and wars and get rid of references to self
 	for (int i = 0; i < g_map.nations.size(); i++)
 	{
@@ -1106,12 +1105,17 @@ void Nation::update()
 {
 	//if the nation has no stabillity, it breaks
 	if (stability < 1)
+	{
 		breakNation();
+		return;
+	}
 
 	//if the nation has 0 states, it needs to be removed:
 	if (controlledStates.size() == 0)
+	{
 		removeSelf();
-
+		return;
+	}
 	updateRelationships();	// helps when wars end
 
 	//MONEY STUFF

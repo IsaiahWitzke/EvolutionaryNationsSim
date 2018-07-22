@@ -13,6 +13,11 @@ void defaultMapMode()
 	g_map.mapMode = MapMode::default;
 }
 
+void opinionMapMode()
+{
+	g_map.mapMode = MapMode::opinion;
+}
+
 void ButtonHandler::update()
 {
 	for (int i = 0; i < buttons.size(); i++)

@@ -119,6 +119,7 @@ bool InputHandler::getInput(Event * event)
 				if (isWithinHitbox(Vector2f(Mouse::getPosition(g_window)), states[i].hitBox))
 				{
 					states[i].printInfo();
+					selectedNation = states[i].controller;	// selected nation
 					break;	//so we dont trigger multiple hitboxes with one click
 				}
 			}

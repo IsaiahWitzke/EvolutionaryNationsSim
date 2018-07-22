@@ -19,7 +19,8 @@ class Nation;
 enum MapMode
 {
 	default,
-	development
+	development,
+	opinion
 };
 
 class MapHandler

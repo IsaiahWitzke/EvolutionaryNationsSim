@@ -53,6 +53,11 @@ void g_updateNations()
 	}
 }
 
+//couple of global functions from "ButtonHandler.cpp" for button callbacks
+extern void developmentMapMode();
+extern void defaultMapMode();
+extern void opinionMapMode();
+
 int main()
 {
 	//buttons
@@ -60,7 +65,8 @@ int main()
 	g_buttonHandler.buttons.push_back(*new ButtonTemplate("Assets/DevelopmentMapModeButton.bmp", Vector2f(200, 10), callBack, 2));
 	callBack = &defaultMapMode;
 	g_buttonHandler.buttons.push_back(*new ButtonTemplate("Assets/DefaultMapModeButton.bmp", Vector2f(10, 10), callBack, 2));
-
+	callBack = &opinionMapMode;
+	g_buttonHandler.buttons.push_back(*new ButtonTemplate("Assets/OpinionMapModeButton.bmp", Vector2f(110, 10), callBack, 2));
 
 	//initially draw stuff to screen.
 	g_update();

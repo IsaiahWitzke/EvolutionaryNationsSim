@@ -6,6 +6,7 @@
 #include "ButtonTemplate.h"
 #include "HitBox.h"
 #include "State.h"
+#include "Nation.h"
 
 using namespace sf;
 
@@ -20,6 +21,9 @@ public:
 	//array of all buttons' and the states so we can "hit" them later on
 	vector<ButtonTemplate> buttons;
 	vector<State> states;
+
+	//when the user clicks a nation it becomes the "selected nation"
+	Nation * selectedNation = NULL;
 
 	bool getInput(Event * event);
 };

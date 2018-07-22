@@ -96,6 +96,62 @@ void State::update()
 	case MapMode::development:
 		this->color = Color(0, development, 0, 255);
 		break;
+
+	case MapMode::opinion:
+		//water
+		if (isWater)
+		{
+			this->color = Color(0, 0, 255, 255);
+			break;
+		}
+			
+		//if no state is selected:
+		if (g_inputHandler.selectedNation == NULL)
+		{
+			this->color = Color(128, 128, 128, 255);
+			break;
+		}
+
+		//states with no controller
+		if (controller == NULL)
+		{
+			this->color = Color(48, 48, 48, 255);
+			break;
+		}
+
+		//controler is the selected nation:
+		if (controller == g_inputHandler.selectedNation)
+		{
+			this->color = Color(20, 40, 200, 255);	// blue
+			break;
+		}
+
+		//otherwise... actual opinion stuff of this state's controller
+		switch (g_inputHandler.selectedNation->diplomaticViews[controller])
+		{
+		case DiplomaticView::close:
+			this->color = Color(0, 255, 0, 255);	// very green
+			break;
+		case DiplomaticView::friendly:
+			this->color = Color(93, 255, 0, 255);	// greenish
+			break;
+		case DiplomaticView::warm:
+			this->color = Color(180, 255, 0, 255);	// yellow green
+			break;
+		case DiplomaticView::neutral:
+			this->color = Color(255, 255, 0, 255);	// yellow
+			break;
+		case DiplomaticView::uneasy:
+			this->color = Color(255, 128, 0, 255);	// orange
+			break;
+		case DiplomaticView::hostile:
+			this->color = Color(255, 0, 0, 255);	// red
+			break;
+
+		default:
+			break;
+		}
+
 	}
 	
 	this->sprite.setColor(color);

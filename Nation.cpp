@@ -115,7 +115,7 @@ void Nation::breakNation()
 		newNations[i]->army = armyForNewNations;
 	}
 
-	//go through all the nations and spread them out as mush as possible
+	//go through all the nations and spread them out as much as possible
 	bool isSpreading = true;
 	while (isSpreading)
 	{
@@ -589,7 +589,7 @@ void Nation::improveRelationsWithNonNeighbor()
 {
 	//a diplomatic nation would want to increase relations with everybody, however,
 	//a militant nation wants to attack everybody, but still kinda understands the need to have friends if other places
-	int chanceOfAction = 100 * (float(diplomat) / 10 - float(militant) / 20 + 0.1);
+	int chanceOfAction = 100 * (float(diplomat) / 10 - (float(militant) / 20) + 0.1);
 	int outcome = rand() % 100;
 	if (outcome > chanceOfAction)
 		return;
@@ -702,7 +702,7 @@ void Nation::improveRelationsWithNonNeighbor()
 	int nationToImpress = rand() % nonNeighbors.size();
 
 	//chance that the nation will not accept the kind gesture
-	int chanceOfAccepting = 100 * (float(nonNeighbors[nationToImpress]->diplomat) / 10 - float(nonNeighbors[nationToImpress]->militant) / 15 + 0.1);
+	int chanceOfAccepting = 100 * (float(nonNeighbors[nationToImpress]->diplomat) / 10 - float(nonNeighbors[nationToImpress]->militant) / 20 + 0.1);
 	//if the nation is already hostile towards this, then an even lower chance:
 	if (nonNeighbors[nationToImpress]->diplomaticViews[this] == hostile)
 		chanceOfAccepting -= 20;
@@ -716,6 +716,28 @@ void Nation::improveRelationsWithNonNeighbor()
 	this->resources -= 10;
 
 
+}
+
+void Nation::attemptToAlly()
+{
+	//a diplomat would do this action:
+	int chanceOfAction = 100 * (float(diplomat) / 10 - float(militant) / 20 + 0.1);
+	int outcome = rand() % 100;
+	if (outcome > chanceOfAction)
+		return;
+
+	//iterate through all nations:
+	for (int i = 0; i < g_map.nations.size(); i++)
+	{
+		if (g_map.nations[i] == this)
+			continue;
+		//as long as the nation is close, and is currently nothing to this nation, ally them
+		if (g_map.nations[i]->diplomaticViews[this] == close && g_map.nations[i]->diplomaticRelations[this] == nothing)
+		{
+			allyWith(g_map.nations[i]);
+			return;
+		}
+	}
 }
 
 bool Nation::warWithStateOffset(int x, int y)
@@ -1137,6 +1159,7 @@ void Nation::update()
 
 	improveRelationsWithNeighbor();
 	improveRelationsWithNonNeighbor();
+	attemptToAlly();
 
 	declareWarOnEnemyNeighbor();
 

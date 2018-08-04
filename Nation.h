@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string>
 #include <windows.h>
+#include "SettingInput.h"
 
 using namespace sf;
 using namespace std;
@@ -37,6 +38,7 @@ enum DiplomaticRelation
 	overlord,
 };
 
+extern SettingInput g_settingInput;
 
 class Nation
 {
@@ -47,7 +49,6 @@ private:
 	void initDiplomacy();
 	void removeSelf();	//gets rid of self. called when the nation dies
 	void updateRelationships();	// goes through all the diplomatic relationships and makes sure that any belligarants are actually in the opposing side in wars
-
 
 public:
 	
@@ -64,14 +65,12 @@ public:
 	
 	
 	int warExhaustion = 0;	// if this ever exceeds 40, stabillity drops, but war warExhuastion drops back to 0
-	int stability = 1;		// how stable the nation is. If ever negative, the nation breaks
+	int stability = g_settingInput.defaultStability;		// how stable the nation is. If ever negative, the nation breaks
 
 	void breakNation();
 
 	map<Nation *, DiplomaticView> diplomaticViews;			// a map of the nation's diplomatic views with others
 	map<Nation *, DiplomaticRelation> diplomaticRelations;	// a map of the nation's diplomatic relationships with others
-
-	
 
 	//to be able to print info, we need a string output of these pairs
 	void printDiplomaticView(Nation * nation);
@@ -113,7 +112,7 @@ public:
 	void borderConflicts();
 
 	//all the different actions the nation can do:
-	void spread();	// to spread around in every possible direction
+	void Nation::spread(vector<State *> spreadableStates);	// to spread around in every possible direction
 	void colonize();	// attempt to colonize a neighboring state with the most development
 	void improveArmy();	// improves the "army" int by one
 	void declareWarOnEnemyNeighbor();	// if there is a neighbor who is an enemy, and who's strength is relative or weaker than than the current nation's alliance, then go to war

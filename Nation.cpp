@@ -3,6 +3,8 @@
 #include <stdlib.h>
 
 extern MapHandler g_map;
+extern void g_update();
+
 
 Nation::Nation(Color color, string name)
 {
@@ -29,10 +31,11 @@ void Nation::breakNation()
 	//the number of new nations that will split off of this parent nation will be between 2 and #ofStates/40
 	int numberOfNewNations;
 	
-	if (controlledStates.size() / 40 == 0)
+	//if the nation has less than 40 states, the default # of new nations will be 2
+	if (controlledStates.size() <= 40)
 		numberOfNewNations = 2;
 	else
-		numberOfNewNations = controlledStates.size() / 40;
+		numberOfNewNations = controlledStates.size() / 20;	// otherwise it will just be 20 states per new nation
 	
 	//so that the new nations arent just initialized with and army of 1 and get steam-rolled 
 	int armyForNewNations = army / numberOfNewNations;
@@ -115,6 +118,9 @@ void Nation::breakNation()
 		newNations[i]->army = armyForNewNations;
 	}
 
+	//so that the new nations cant spread more than they should be able to:
+	vector <State *> spreadableStates = controlledStates;
+
 	//go through all the nations and spread them out as much as possible
 	bool isSpreading = true;
 	while (isSpreading)
@@ -123,7 +129,7 @@ void Nation::breakNation()
 		for (int i = 0; i < newNations.size(); i++)
 		{
 			int statesBeforeSpreading = newNations[i]->controlledStates.size();
-			newNations[i]->spread();
+			newNations[i]->spread(spreadableStates);
 
 			if (statesBeforeSpreading != newNations[i]->controlledStates.size())
 				isSpreading = true;
@@ -326,7 +332,7 @@ void Nation::borderConflicts()
 	}
 }
 
-void Nation::spread()
+void Nation::spread(vector<State *> spreadableStates)
 {
 	//first, check around every state that the nation controls,
 	//if the nations around the controlled states does not have any owner then "addContolledState" that state
@@ -339,25 +345,69 @@ void Nation::spread()
 		int x = controlledStates[i]->positionInMap.x;
 		int y = controlledStates[i]->positionInMap.y;
 		//checking to the left
-		if (x != 0 && g_map.states[x - 1][y].controller == NULL)
+		x -= 1;
+		if (x >= 0 && g_map.states[x][y].controller == NULL)
 		{
+			bool isSpreadable = false;
+			for (int i = 0; i < spreadableStates.size(); i++)
+			{
+				if (spreadableStates[i] == &g_map.states[x][y])
+				{
+					isSpreadable = true;
+				}
+			}
 			//if there a valid state to the left, then we will append it to the temp list of states
-			addContolledState(&g_map.states[x - 1][y]);
+			if (isSpreadable)
+				addContolledState(&g_map.states[x][y]);
 		}
 		//to the right
-		if (x != g_map.width-1 && g_map.states[x + 1][y].controller == NULL)
+		x += 2;
+		if (x < g_map.width && g_map.states[x][y].controller == NULL)
 		{
-			addContolledState(&g_map.states[x + 1][y]);
+			bool isSpreadable = false;
+			for (int i = 0; i < spreadableStates.size(); i++)
+			{
+				if (spreadableStates[i] == &g_map.states[x][y])
+				{
+					isSpreadable = true;
+				}
+			}
+			//if there a valid state to the left, then we will append it to the temp list of states
+			if (isSpreadable)
+				addContolledState(&g_map.states[x][y]);
 		}
 		//down
-		if (y != g_map.height-1 && g_map.states[x][y + 1].controller == NULL)
+		x--;
+		y++;
+		if (y < g_map.height && g_map.states[x][y].controller == NULL)
 		{
-			addContolledState(&g_map.states[x][y + 1]);
+			bool isSpreadable = false;
+			for (int i = 0; i < spreadableStates.size(); i++)
+			{
+				if (spreadableStates[i] == &g_map.states[x][y])
+				{
+					isSpreadable = true;
+				}
+			}
+			//if there a valid state to the left, then we will append it to the temp list of states
+			if (isSpreadable)
+				addContolledState(&g_map.states[x][y]);
 		}
 		//up
-		if (y != 0 && g_map.states[x][y - 1].controller == NULL)
+		y -= 2;
+		if (y >= 0 && g_map.states[x][y].controller == NULL)
 		{
-			addContolledState(&g_map.states[x][y - 1]);
+			bool isSpreadable = false;
+			for (int i = 0; i < spreadableStates.size(); i++)
+			{
+				if (spreadableStates[i] == &g_map.states[x][y])
+				{
+					isSpreadable = true;
+				}
+			}
+			//if there a valid state to the left, then we will append it to the temp list of states
+			if (isSpreadable)
+				addContolledState(&g_map.states[x][y]);
 		}
 	}
 }
@@ -438,8 +488,8 @@ void Nation::improveArmy()
 
 void Nation::declareWarOnEnemyNeighbor()
 {
-	//how much this nation wants to go to war: 100 % * (militant/10 - warExhaustion/100 - #of wars involved in/2)
-	int chanceOfAction = 100 * (float(militant)/10 - float(warExhaustion)/100 - float(wars.size())/2);
+	// militant nations want to go to war, however, if the nation is exhausted, unstable and are in other wars, they are not as willing to join
+	int chanceOfAction = 100 * (float(militant)/10 - 1/float(stability) - float(warExhaustion)/40 - float(wars.size())/2);
 	int outcome = rand() % 100;
 	if (outcome > chanceOfAction)
 		return;
@@ -475,7 +525,7 @@ void Nation::declareWarOnEnemyNeighbor()
 void Nation::improveRelationsWithNeighbor()
 {
 	//a diplomatic nation would want to increase relations with everybody, however, a militant nation wants to attack their neighbors
-	int chanceOfAction = 100 * (float(diplomat) / 10 - float(militant) / 10 + 0.1);
+	int chanceOfAction = 100 * (float(diplomat) / 7 - float(militant) / 10 + 0.2);
 	int outcome = rand() % 100;
 	if (outcome > chanceOfAction)
 		return;
@@ -571,12 +621,16 @@ void Nation::improveRelationsWithNeighbor()
 	int nationToImpress = rand() % neighbors.size();
 
 	//chance that the nation will not accept the kind gesture
-	int chanceOfAccepting = 100 * (float(neighbors[nationToImpress]->diplomat) / 10 - float(neighbors[nationToImpress]->militant) / 15 + 0.1);
+	int chanceOfAccepting = 100 * (float(neighbors[nationToImpress]->diplomat) / 5 - float(neighbors[nationToImpress]->militant) / 10 + 0.2);
 	//if the nation is already hostile towards this, then an even lower chance:
 	if (neighbors[nationToImpress]->diplomaticViews[this] == hostile)
 		chanceOfAccepting -= 20;
 	if (neighbors[nationToImpress]->diplomaticViews[this] == uneasy)
 		chanceOfAccepting -= 10;
+
+	//already close
+	if (neighbors[nationToImpress]->diplomaticViews[this] == close)
+		return;
 
 	//only if the other nation accepts the relations will be improved, but the resources will still be deducted
 	if (rand() % 100 < chanceOfAccepting)
@@ -589,7 +643,7 @@ void Nation::improveRelationsWithNonNeighbor()
 {
 	//a diplomatic nation would want to increase relations with everybody, however,
 	//a militant nation wants to attack everybody, but still kinda understands the need to have friends if other places
-	int chanceOfAction = 100 * (float(diplomat) / 10 - (float(militant) / 20) + 0.1);
+	int chanceOfAction = 100 * (float(diplomat) / 7 - (float(militant) / 20) + 0.2);
 	int outcome = rand() % 100;
 	if (outcome > chanceOfAction)
 		return;
@@ -702,12 +756,16 @@ void Nation::improveRelationsWithNonNeighbor()
 	int nationToImpress = rand() % nonNeighbors.size();
 
 	//chance that the nation will not accept the kind gesture
-	int chanceOfAccepting = 100 * (float(nonNeighbors[nationToImpress]->diplomat) / 10 - float(nonNeighbors[nationToImpress]->militant) / 20 + 0.1);
+	int chanceOfAccepting = 100 * (float(nonNeighbors[nationToImpress]->diplomat) / 5 - float(nonNeighbors[nationToImpress]->militant) / 20 + 0.2);
 	//if the nation is already hostile towards this, then an even lower chance:
 	if (nonNeighbors[nationToImpress]->diplomaticViews[this] == hostile)
 		chanceOfAccepting -= 20;
 	if (nonNeighbors[nationToImpress]->diplomaticViews[this] == uneasy)
 		chanceOfAccepting -= 10;
+
+	//if the nations are already close, we dont want to deduct money
+	if (nonNeighbors[nationToImpress]->diplomaticViews[this] == uneasy)
+		return;
 
 	//only if the other nation accepts the relations will be improved, but the resources will still be deducted
 	if (rand() % 100 < chanceOfAccepting)
@@ -1107,6 +1165,7 @@ void Nation::update()
 	if (stability < 1)
 	{
 		breakNation();
+		g_update();
 		return;
 	}
 
@@ -1120,12 +1179,12 @@ void Nation::update()
 
 	//MONEY STUFF
 
-	//income: development * 0.05
-	this->taxIncome = getDevelopment() * 0.05;
-	//state maitenence: (0.3 x number of states)^2
-	this->stateMaintenance = pow((controlledStates.size())*0.3, 1.5);
+	//income: development * incomePerDevelopment
+	this->taxIncome = getDevelopment() * g_settingInput.incomePerDevelopment;
+	//state maitenence: some coeficient(number of states)^2
+	this->stateMaintenance = g_settingInput.stateMaintenance * pow((controlledStates.size()), 2);
 	//same with army
-	this->armyMaintenance = pow((army)*0.3, 1.5);
+	this->armyMaintenance = g_settingInput.armyMaintenance * pow(army, 2);
 
 	this->revenue = taxIncome - stateMaintenance - armyMaintenance;
 	this->resources += revenue;
@@ -1133,10 +1192,10 @@ void Nation::update()
 	
 	//STABILLITY STUFF
 
-	//there is a 0.5% chance of regaining stabillity if the nation is not at war (also war exhaustion decreases)
+	//there is a 2% chance of regaining stabillity if the nation is not at war (also war exhaustion decreases)
 	if (wars.size() == 0)
 	{
-		if (rand() % 200 == 1 && stability < 5)
+		if (rand() % 50 == 1 && stability < 5)
 			this->stability++;
 		if (rand() % 10 == 1 && warExhaustion > 0)
 			this->warExhaustion--;

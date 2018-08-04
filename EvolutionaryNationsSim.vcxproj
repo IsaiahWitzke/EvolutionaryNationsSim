@@ -151,6 +151,7 @@
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="MapHandler.h" />
     <ClInclude Include="Nation.h" />
+    <ClInclude Include="SettingInput.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -165,6 +166,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MapHandler.cpp" />
     <ClCompile Include="Nation.cpp" />
+    <ClCompile Include="SettingInput.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

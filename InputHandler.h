@@ -10,6 +10,8 @@
 
 using namespace sf;
 
+
+
 class InputHandler
 {
 private:

@@ -18,6 +18,9 @@ Vector2f GLOBALOFFSET = Vector2f(0, 0);
 
 RenderWindow g_window(VideoMode(1000, 1000), "Evolutionary Nations");
 
+//the _settings file can be edited by the user to generate different initial simulation variables
+SettingInput g_settingInput = SettingInput("_Settings.txt");	
+
 //the entire collection of states the entire simulation is based off of
 MapHandler g_map;
 

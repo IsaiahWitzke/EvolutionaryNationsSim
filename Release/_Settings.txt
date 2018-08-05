@@ -1,0 +1,14 @@
+#this file is here for the user to edit and experiment with different variables that will affect the output of the simulation
+
+# the higher this is, the longer it will take nations to break apart (should be in between 1-5)
+DefaultStability: 2
+# how much income/tax each nation gets per development (originally 0.5)
+IncomePerDevelopment: 0.9
+
+
+# this is the coeficiant of a polynomial function f(x) = StateMaintenance * (x^2), where x is the amount of states the nation owns
+# A nation needs to pay f(x) amount of state maintenance every turn (originally 0.1)
+StateMaintenance: 0.1
+
+# same function for army maintenance as well (originally 0.1)
+armyMaintenance: 0.1

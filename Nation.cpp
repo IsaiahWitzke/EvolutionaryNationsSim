@@ -243,6 +243,11 @@ void Nation::printInfo()
 		cout << "Dipolmacy: " << endl;
 		for (auto& x : diplomaticViews)
 		{
+			//if the nation has no relations with "x" nation, dont print it out
+			if (diplomaticRelations[x.first]== DiplomaticRelation::nothing && diplomaticViews[x.first] == DiplomaticView::neutral)
+			{
+				continue;
+			}
 			cout << "   feels ";
 			printDiplomaticView(x.first); 
 			cout << " towards " << x.first->nationName << endl;

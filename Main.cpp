@@ -36,6 +36,9 @@ TextHandler g_textHandler;
 //if false, then the nations do not update
 bool g_isNationUpdate = true;
 
+//number of nation updates since start
+int g_timeSinceStart = 0;
+
 //everytime the screen needs to be updated this is called
 void g_update()
 {
@@ -54,6 +57,10 @@ void g_updateNations()
 	{
 		g_map.nations[i]->update();
 	}
+	//updating the date text
+	g_timeSinceStart++;
+	string sTimeSinceStart = to_string(g_timeSinceStart);
+	g_textHandler.staticText[0].setString(sTimeSinceStart);
 }
 
 //couple of global functions from "ButtonHandler.cpp" for button callbacks
@@ -81,6 +88,18 @@ int main()
 	//For refreshing the nations periodically
 	Clock nationUpdateClock;
 	Time nationUpdateTime = seconds(0.5);
+
+	g_textHandler.addText("0", Vector2f(430, 0));
+	g_textHandler.staticText[0].setCharacterSize(35);
+
+	g_textHandler.addText("Date: ", Vector2f(330, 0));
+	g_textHandler.staticText[1].setCharacterSize(35);
+
+	//initially pause the simulation and display some text to the user:
+	g_isNationUpdate = false;
+	cout << "Welcome to evelutionary nations! \n";
+	cout << "Press space to play / pause the simulation \n";
+	cout << "WASD to pan around, mouse wheel to zoom in/out \n";
 
 	//main loop
 	while (g_window.isOpen())

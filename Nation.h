@@ -79,6 +79,8 @@ public:
 	Nation(Color color, string name);
 	~Nation();
 
+	
+
 	//print out the nation's information
 	void printInfo();
 

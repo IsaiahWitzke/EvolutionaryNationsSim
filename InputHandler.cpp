@@ -32,7 +32,7 @@ InputHandler::~InputHandler()
 
 bool InputHandler::getInput(Event * event)
 {
-	const float PANSPEED = 10;
+	const float PANSPEED = 20;
 	const float SCROLLSPEED = 0.3;
 
 	if (event->type == Event::KeyPressed)

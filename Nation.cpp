@@ -23,8 +23,13 @@ Nation::~Nation()
 {
 }
 
+
+
+
 void Nation::breakNation()
 {
+	//
+
 	//starting new nations
 	vector<Nation*> newNations;
 
@@ -108,8 +113,6 @@ void Nation::breakNation()
 		controlledStates[i]->controller = NULL;
 	}
 
-	removeSelf();
-
 	//diplomacy for all new nations:
 	for (int i = 0; i < newNations.size(); i++)
 	{
@@ -126,15 +129,54 @@ void Nation::breakNation()
 	while (isSpreading)
 	{
 		isSpreading = false;
+		//the nations who are at war with this nation get to spread into the broken nation
+		for (int i = 0; i < wars.size(); i++)
+		{
+			//figuring out what side this nation is on
+			bool isDefender = false;
+			for (int j = 0; j < wars[i]->defenders.size(); j++)
+			{
+				if (wars[i]->defenders[j] == this)
+					isDefender = true;
+			}
+
+			if (isDefender)
+			{
+				for (int j = 0; j < wars[i]->attackers.size(); j++)
+				{
+					int statesBeforeSpreading = wars[i]->attackers[j]->controlledStates.size();
+					//wars[i]->attackers[j]->spread(spreadableStates);
+
+					if (statesBeforeSpreading != wars[i]->attackers[j]->controlledStates.size())
+						isSpreading = true;
+				}
+			}
+			else
+			{
+				for (int j = 0; j < wars[i]->defenders.size(); j++)
+				{
+					int statesBeforeSpreading = wars[i]->defenders[j]->controlledStates.size();
+					//wars[i]->defenders[j]->spread(spreadableStates);
+
+					if (statesBeforeSpreading != wars[i]->defenders[j]->controlledStates.size())
+						isSpreading = true;
+				}
+			}
+			
+		}
+
+		//the new nations get to spread
 		for (int i = 0; i < newNations.size(); i++)
 		{
 			int statesBeforeSpreading = newNations[i]->controlledStates.size();
-			newNations[i]->spread(spreadableStates);
+			//newNations[i]->spread(spreadableStates);
 
 			if (statesBeforeSpreading != newNations[i]->controlledStates.size())
 				isSpreading = true;
 		}
 	}
+
+	removeSelf();
 }
 
 void Nation::printDiplomaticView(Nation * nation)
